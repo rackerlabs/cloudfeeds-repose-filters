@@ -1,0 +1,29 @@
+## intellij stuff
+.idea/
+
+## java specific
+!.gitignore
+*.iml
+*.iws
+*.ipr
+target
+*/target
+*/*/target
+ 
+## generic files to ignore
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+/test-suite/nb-configuration.xml
+/hopper/nb-configuration.xml
+/server/nb-configuration.xml
+/server/nbactions.xml
+/test-suite/nbactions.xml
+/hopper/nbactions.xml
+/server/nbactions-pack-server-jar.xml
+/ah-war/catalog.xml
+/server/catalog.xml
+/test-suite/catalog.xml
+/ah-war/nbactions.xml

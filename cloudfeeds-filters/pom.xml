@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.rackspace.cloudfeeds.repose</groupId>
+        <artifactId>cloudfeeds-repose-filters</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.rackspace.cloudfeeds.repose</groupId>
+    <artifactId>cloudfeeds-filters</artifactId>
+
+    <name>cloudfeeds-filters</name>
+    <description>Custom Cloud Feeds Repose filters</description>
+
+    <packaging>ear</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.rackspace.cloudfeeds.repose</groupId>
+            <artifactId>tenant-feed</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>build-rpm</id>
+            <build>
+                <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>rpm-maven-plugin</artifactId>
+                    <version>2.1-alpha-1</version>
+                    <executions>
+                        <execution>
+                            <id>Build RPM</id>
+                            <goals>
+                                <goal>attached-rpm</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <copyright>Apache License, Version 2.0</copyright>
+                        <group>Applications/Communications</group>
+                        <packager>Rackspace - Cloud Integration Team</packager>
+                        <description>TODO</description>
+                        <release>1</release>
+                        <mappings>
+                            <mapping>
+                                <directory>/usr/share/repose/filters</directory>
+                                <username>repose</username>
+                                <groupname>repose</groupname>
+                                <!-- Modify file permissions as needed -->
+                                <filemode>770</filemode>
+                                <sources>
+                                    <source>
+                                        <location>${basedir}/../cloudfeeds-filters/target/cloudfeeds-filters-${project.version}.ear</location>
+                                    </source>
+                                </sources>
+                            </mapping>
+                        </mappings>
+                        <requires>
+                            <require>repose</require>
+                        </requires>
+                    </configuration>
+                </plugin>
+            </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <version>2.5</version>
+
+                <extensions>true</extensions>
+
+                <executions>
+                    <execution>
+                        <id>Package Ear Contents</id>
+
+                        <phase>package</phase>
+
+                        <goals>
+                            <goal>ear</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <generateApplicationXml>false</generateApplicationXml>
+
+                    <modules>
+                        <jarModule>
+                            <groupId>com.rackspace.cloudfeeds.repose</groupId>
+                            <artifactId>tenant-feed</artifactId>
+                        </jarModule>
+                    </modules>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
