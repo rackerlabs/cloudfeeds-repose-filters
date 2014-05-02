@@ -159,14 +159,17 @@ public class TenantFilter implements Filter {
             stream = streamP;
         }
 
+        @Override
         public void write(int b) throws IOException  {
             stream.write(b);
         }
 
+        @Override
         public void write(byte[] b) throws IOException  {
             stream.write(b);
         }
 
+        @Override
         public void write(byte[] b, int off, int len) throws IOException  {
             stream.write(b,off,len);
         }
@@ -180,7 +183,13 @@ public class TenantFilter implements Filter {
 
 
         public String getContent() {
-
+            try {
+                stream.flush();
+                stream.close();
+            }
+            catch ( IOException e ) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
             return stream.toString();
         }
 
