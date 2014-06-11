@@ -4,6 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.xml.sax.SAXParseException;
 
 
 import javax.servlet.FilterChain;
@@ -21,35 +22,29 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 /**
- * These tests verify that the correct response & status code are written to the ServletResponse object based
- * on the URI, tenant Id, and response coming from the origin service.
+ * These tests verify the TenantFilter.getResponse() method, which is free from any repose-specific interfaces.
  */
 public class TenantFilterTest {
 
-    static final String typeAtom = "application/atom+xml; type=entry;charset=utf-8 ";
-    static final String typeJson = "application/json";
-    static final String entriesURI = "functest1/events/1234/entries/urn:uuid:c36318b8-5d03-6985-d379-fc5a9df6f4b0";
+    static final String tidGood = "1234";
+    static final String contentJson = "{ 'json': 'content'}";
 
-    @Ignore
+
     @Test
-    public void entriesUri200CodeJson() throws IOException, ServletException {
+    public void entriesUri200CodeJson() throws Exception {
 
-        String content = "{ 'json': 'content'}";
+        TenantFilter tf = new TenantFilter();
 
-        CharArrayWriter writer = new CharArrayWriter();
+        CodeContent c = tf.getResponse( new CodeContent( 200, contentJson ), tidGood, false );
 
-        HttpServletResponse servletResponse = mockAndRun( content, 200, entriesURI, writer, typeJson );
-
-        // status code is never reset
-        verify( servletResponse, never() ).setStatus( anyInt() );
-
-        // valid content is set on the response
-        assertEquals( content, writer.toString() );
+        assertEquals( 200, c.getStatusCode() );
+        assertEquals( contentJson, c.getContent() );
     }
 
-    @Ignore
     @Test
-    public void entriesUri200CodeValidXml() throws IOException, ServletException {
+    public void entriesUri200CodeValidXml() throws Exception {
+
+        TenantFilter tf = new TenantFilter();
 
         String content = "<atom:entry>" +
               "<atom:id>urn:uuid:c36318b8-5d03-6985-d379-fc5a9df6f4b0</atom:id>" +
@@ -74,108 +69,58 @@ public class TenantFilterTest {
               "<atom:published>2014-04-22T14:32:53.974Z</atom:published>" +
               "</atom:entry>";
 
-        CharArrayWriter writer = new CharArrayWriter();
+        CodeContent c = tf.getResponse( new CodeContent( 200, content ), tidGood, true );
 
-        HttpServletResponse servletResponse = mockAndRun( content, 200, entriesURI, writer, typeAtom );
-
-        // status code is never reset
-        verify( servletResponse, never() ).setStatus( anyInt() );
-
-        // valid content is set on the response
-        assertEquals( content, writer.toString() );
+        assertEquals( 200, c.getStatusCode() );
+        assertEquals( content, c.getContent() );
     }
 
-    @Ignore
     @Test
-    public void entriesUri200CodeNoTidXml() throws IOException, ServletException {
+    public void entriesUri200CodeNoTidXml() throws Exception {
+
+        TenantFilter tf = new TenantFilter();
 
         String content = "<atom:entry/>";
 
-        CharArrayWriter writer = new CharArrayWriter();
+        CodeContent c = tf.getResponse( new CodeContent( 200, content ), tidGood, true );
 
-        HttpServletResponse servletResponse = mockAndRun( content, 200, entriesURI, writer, typeAtom );
-
-        // status code is set to 405
-        verify( servletResponse, atMost( 1 ) ).setStatus( 404 );
-
-        // valid content is set on the response
-        assertEquals( TenantFilter.getErrorMessage( 404, TenantFilter.notFound ), writer.toString() );
+        assertEquals( 404, c.getStatusCode() );
+        assertEquals( TenantFilter.getErrorMessage( 404, TenantFilter.notFound ), c.getContent() );
     }
 
-    @Ignore
-    @Test
-    public void entriesUri200CodeInvalidXML() throws IOException, ServletException {
+    @Test( expected= SAXParseException.class )
+    public void entriesUri200CodeInvalidXML() throws Exception {
+
+        TenantFilter tf = new TenantFilter();
 
         String content = "<atom:entry>";
 
-        CharArrayWriter writer = new CharArrayWriter();
-
-        HttpServletResponse servletResponse = mockAndRun( content, 200, entriesURI, writer, typeAtom );
-
-        verify( servletResponse, atMost( 1 ) ).setStatus( 503 );
-
-        assertEquals( TenantFilter.getErrorMessage( 503, TenantFilter.internalError ), writer.toString() );
+        CodeContent c = tf.getResponse( new CodeContent( 200, content ), tidGood, true );
     }
 
-    @Ignore
     @Test
-    public void notEntriesUri200Code() throws IOException, ServletException {
+    public void notEntriesUri200Code() throws Exception {
 
-        final String content = "non-entries";
+        TenantFilter tf = new TenantFilter();
 
-        CharArrayWriter writer = new CharArrayWriter();
+        String content = "non-entries";
 
-        HttpServletResponse servletResponse = mockAndRun( content, 200, "/not/entries", writer, typeAtom );
+        CodeContent c = tf.getResponse( new CodeContent( 200, content ), null, true );
 
-        verify( servletResponse, never() ).setStatus( anyInt() );
-
-        assertEquals( content, writer.toString() );
+        assertEquals( 200, c.getStatusCode() );
+        assertEquals( content, c.getContent() );
     }
 
-    @Ignore
     @Test
-    public void entriesUri500Code() throws IOException, ServletException {
+    public void entriesUri500Code() throws Exception {
 
-        final String content = "error message";
+        TenantFilter tf = new TenantFilter();
 
-        CharArrayWriter writer = new CharArrayWriter();
+        String content = "error message";
 
-        HttpServletResponse servletResponse = mockAndRun( content, 500, entriesURI, writer, typeAtom );
+        CodeContent c = tf.getResponse( new CodeContent( 500, content ), tidGood, true );
 
-        verify( servletResponse, never() ).setStatus( anyInt() );
-
-        assertEquals( content, writer.toString() );
+        assertEquals( 500, c.getStatusCode() );
+        assertEquals( content, c.getContent() );
     }
-
-    private HttpServletResponse mockAndRun( final String content, int originStatus, String uri, CharArrayWriter writer,
-                                            String contentType )
-          throws IOException, ServletException {
-        HttpServletRequest servletRequest = mock( HttpServletRequest.class );
-        when(servletRequest.getRequestURI()).thenReturn( uri );
-
-        HttpServletResponse servletResponse = mock (HttpServletResponse.class );
-        when( servletResponse.getStatus() ).thenReturn( originStatus );
-        when( servletResponse.getWriter() ).thenReturn( new PrintWriter( writer ) );
-        when( servletResponse.getHeader( "Content-Type" ) ).thenReturn( contentType );
-
-        FilterChain filterChain = mock( FilterChain.class );
-
-        doAnswer( new Answer() {
-
-            public Object answer( InvocationOnMock invocation ) throws IOException {
-
-                ServletResponse resp = (ServletResponse)invocation.getArguments()[ 1 ];
-
-                resp.getWriter().write( content );
-
-                return null;
-            } } ).when( filterChain ).doFilter( (ServletRequest) anyObject(), (ServletResponse) anyObject() );
-
-        TenantFilter filter = new TenantFilter();
-
-        filter.doFilter( servletRequest, servletResponse, filterChain );
-
-        return servletResponse;
-    }
-
 }

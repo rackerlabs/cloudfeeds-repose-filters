@@ -1,6 +1,13 @@
 package com.rackspace.cloudfeeds.repose;
 
+import com.rackspace.papi.commons.util.servlet.http.MutableHttpServletRequest;
+import com.rackspace.papi.commons.util.servlet.http.MutableHttpServletResponse;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.pool2.BasePooledObjectFactory;
+import org.apache.commons.pool2.ObjectPool;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -10,14 +17,15 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletResponseWrapper;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.*;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,19 +33,22 @@ import java.util.regex.Pattern;
  * This filter is to prevent observers reading an individual tenanted-entry from viewing other tenant's entries.
  *
  * If a response matches the entries URI pattern & is a 200, this filter verifies that the tenant id provided in the
- * tenanted-URI matches the tenant id for the entry.  If not, a 405 is returned.
+ * tenanted-URI matches the tenant id for the entry.  If not, a 404 is returned.
  *
  * This is required as repose does not currently provide the ability to modify the status code based on a response's
  * content.
  */
 public class TenantFilter implements Filter {
 
-    public static final String notFound = "Resource no found.";
+    public static final String notFound = "Resource not found.";
 
     public static final String internalError = "Internal Error: " + TenantFilter.class.getName();
 
-    public static String getErrorMessage( int code, String mesg ) {
+    private static final ObjectPool<XPathExpression> xpathPool = new GenericObjectPool<XPathExpression>( new TidXPathPooledObjectFactory<XPathExpression>() );
 
+    private static final ObjectPool<Matcher> matcherPool = new GenericObjectPool<Matcher>( new TidMatcherPooledObjectFactory<Matcher>() );
+
+    public static String getErrorMessage( int code, String mesg ) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
               "<error xmlns=\"http://abdera.apache.org\">\n" +
               "<code>" + code + "</code>\n" +
@@ -47,11 +58,6 @@ public class TenantFilter implements Filter {
 
     private static final Logger LOG = LoggerFactory.getLogger( TenantFilter.class );
 
-    // TODO: should we pool matcher instances instead?
-    static final private Pattern patTidEntry = Pattern.compile( ".+/events/([^/?]+)/entries/[^?]+" );
-
-    static final private XPathFactory xPathfactory = XPathFactory.newInstance();
-
     static final private DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 
     /*
@@ -59,7 +65,7 @@ public class TenantFilter implements Filter {
      * namespace-aware.
      */
     static {
-                 /* TODO:  removing to make running in tomcat easy
+
         try {
             builderFactory.setFeature("http://xml.org/sax/features/namespaces", false);
         }
@@ -67,146 +73,122 @@ public class TenantFilter implements Filter {
 
             LOG.error( TenantFilter.class.getName(), e );
         }
-        */
     }
 
     @Override
-    public void init( FilterConfig filterConfigP ) throws ServletException {
-
-        System.out.println( "Start " + TenantFilter.class.getName() );
+    public void init( FilterConfig filterConfig ) throws ServletException {
     }
 
     @Override
     public void doFilter( ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain )
           throws IOException, ServletException {
 
-        ResponseWrapper respWrap = new ResponseWrapper( (HttpServletResponse) servletResponse );
+        //Use the repose internal Wrapper to grab a response and modify it
+        MutableHttpServletRequest mutableRequest =
+              MutableHttpServletRequest.wrap( (HttpServletRequest) servletRequest );
+        mutableRequest.setInputStream( servletRequest.getInputStream() );
 
-        // get tid before translation rips it out of the request
-        HttpServletRequest req = (HttpServletRequest)servletRequest;
-        Matcher match = patTidEntry.matcher( req.getRequestURI() );
-        String tid = match.matches() ? match.group( 1 ) : null;
+        //Use a repose internal mutable response
+        MutableHttpServletResponse mutableResponse =
+              MutableHttpServletResponse.wrap( (HttpServletRequest) servletRequest,
+                                               (HttpServletResponse) servletResponse );
 
-        filterChain.doFilter( servletRequest, respWrap );
+        PrintWriter outWriter = mutableResponse.getWriter();
+        CodeContent codeContent = new CodeContent();
+        codeContent.setStatusCode( mutableResponse.getStatus() );
 
-        // TODO
-        LOG.info( "TID: " + tid );
-        LOG.info( "URI: " + req.getRequestURI() );
-        //LOG.info( "Content: " + respWrap.getContentType() );
-        LOG.info( "Status: " + respWrap.getStatus() );
-        LOG.info( "resp Header 'Content-Type: " + respWrap.getHeader( "Content-Type" ) );
+        try {
 
-        String content = respWrap.getContent();
+            // get tid before translation rips it out of the request
+            Matcher match = matcherPool.borrowObject().reset( mutableRequest.getRequestURI() );
+            String tid = match.matches() ? match.group( 1 ) : null;
 
-        System.out.println( "Content Body: " + content );
-        LOG.info( "Content Body: " + content );
+            //Fire off the next one in the filter chain
+            filterChain.doFilter( mutableRequest, mutableResponse );
 
-        PrintWriter outWriter = servletResponse.getWriter();
+            //read in the entire content
+            codeContent.setContent( new Scanner( mutableResponse.getInputStream() ).useDelimiter( "\\A" ).next() );
 
-        if( tid != null
-              && respWrap.getStatus() == 200
-              && respWrap.getHeader( "Content-Type" ).contains( "application/atom+xml" ) ) {
+            codeContent = getResponse( codeContent, tid,
+                                       mutableResponse.getHeader( "Content-Type" ).contains( "application/atom+xml" ) );
+        }
+        catch ( Exception e ) {
 
+            // if internal error, report as such
+            codeContent.setStatusCode( 503 );
+            codeContent.setContent( getErrorMessage( 503, internalError ) );
+            LOG.error( internalError, e );
+        }
+        finally {
 
-            try {
+            mutableResponse.setStatus( codeContent.getStatusCode() );
+            outWriter.write( codeContent.getContent() );
+            mutableResponse.commitBufferToServletOutputStream();
+        }
+    }
 
-                // TODO: should I pool:
-                // - xpathexpression
+    // making this public so we can easily write unit tests
+    public CodeContent getResponse( CodeContent codeContent,
+                                    String tid,
+                                    boolean isAtomXml ) throws Exception {
+        if ( tid != null
+              && codeContent.getStatusCode() == 200
+              && isAtomXml ) {
 
-                XPathExpression xpath = xPathfactory.newXPath().compile(
-                    "/entry/category[@term='tid:" + tid + "']/@term" );
+            Document doc =
+                  builderFactory.newDocumentBuilder().parse( new InputSource( new StringReader( codeContent.getContent() ) ) );
 
-                Document doc = builderFactory.newDocumentBuilder().parse( new InputSource( new StringReader( respWrap.getContent() ) ) );
+            XPathExpression xpath = xpathPool.borrowObject();
 
-                // if no match return 404 & insert error message
-                if ( xpath.evaluate( doc ).isEmpty() ) {
+            String contentTid = xpath.evaluate( doc );
 
-                    // TODO
-                    LOG.info( "404" );
+            xpathPool.returnObject( xpath );
 
-                    respWrap.setStatus( 404 );
-                    outWriter.write( getErrorMessage( 404, notFound ) );
+            // if no match return 404 & insert error message
+            if ( !contentTid.equals( "tid:" + tid ) ) {
 
-                    return;
-                }
-            }
-            catch ( Exception e ) {
-
-                // if internal error, report as such
-                respWrap.setStatus( 503 );
-
-                outWriter.write( getErrorMessage( 503, internalError ) );
-
-                LOG.error( internalError, e );
-
-                return;
+                codeContent.setStatusCode( 404 );
+                codeContent.setContent( getErrorMessage( 404, notFound ) );
             }
         }
-
-        // else, write out received response & keep status code
-        outWriter.write( content );
+        return codeContent;
     }
 
     @Override
     public void destroy() {
     }
 
-    private class FilterServletOutputStream extends ServletOutputStream {
+    static class TidMatcherPooledObjectFactory<Matcher> extends BasePooledObjectFactory<Matcher> {
 
-        private ByteArrayOutputStream stream;
+        static final private Pattern patTidEntry = Pattern.compile( ".+/events/([^/?]+)/entries/[^?]+" );
 
-        public FilterServletOutputStream( ByteArrayOutputStream streamP ) {
-            stream = streamP;
+        @Override
+        public Matcher create() {
+
+            return (Matcher)patTidEntry.matcher( "" );
         }
 
         @Override
-        public void write(int b) throws IOException  {
-            stream.write(b);
-        }
+        public PooledObject<Matcher> wrap( Matcher m ) {
 
-        @Override
-        public void write(byte[] b) throws IOException  {
-            stream.write(b);
-        }
-
-        @Override
-        public void write(byte[] b, int off, int len) throws IOException  {
-            stream.write(b,off,len);
+            return new DefaultPooledObject<Matcher>( m );
         }
     }
 
-    private class ResponseWrapper extends HttpServletResponseWrapper {
 
-        private ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        private PrintWriter writer = new PrintWriter( stream );
-        private ServletOutputStream soStream = new FilterServletOutputStream( stream );
+    static class TidXPathPooledObjectFactory<XPathExpression> extends BasePooledObjectFactory<XPathExpression> {
 
+        static final private XPathFactory xPathfactory = XPathFactory.newInstance();
 
-        public String getContent() {
-            try {
-                stream.flush();
-                stream.close();
-            }
-            catch ( IOException e ) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-            return stream.toString();
-        }
-
-        public ResponseWrapper( HttpServletResponse resp ) {
-            super( resp );
+        @Override
+        public XPathExpression create() throws XPathExpressionException {
+            return (XPathExpression)xPathfactory.newXPath().compile( "/entry/category[starts-with(@term, \"tid:\")]/@term" );
         }
 
         @Override
-        public ServletOutputStream getOutputStream() throws IOException {
+        public PooledObject<XPathExpression> wrap( XPathExpression xpath ) {
 
-            return soStream;
-        }
-
-        @Override
-        public PrintWriter getWriter() {
-
-            return writer;
+            return new DefaultPooledObject<XPathExpression>( xpath );
         }
     }
 }
