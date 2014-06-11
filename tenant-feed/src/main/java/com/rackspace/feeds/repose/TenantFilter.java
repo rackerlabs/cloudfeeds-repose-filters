@@ -1,4 +1,4 @@
-package com.rackspace.cloudfeeds.repose;
+package com.rackspace.feeds.repose;
 
 import com.rackspace.papi.commons.util.servlet.http.MutableHttpServletRequest;
 import com.rackspace.papi.commons.util.servlet.http.MutableHttpServletResponse;

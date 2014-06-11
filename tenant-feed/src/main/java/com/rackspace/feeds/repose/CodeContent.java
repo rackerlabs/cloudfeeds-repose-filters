@@ -1,4 +1,4 @@
-package com.rackspace.cloudfeeds.repose;
+package com.rackspace.feeds.repose;
 
 /**
  * Created by rona6028 on 6/4/14.

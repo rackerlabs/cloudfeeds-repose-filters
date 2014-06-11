@@ -3,23 +3,23 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.rackspace.cloudfeeds.repose</groupId>
-        <artifactId>cloudfeeds-repose-filters</artifactId>
+        <groupId>com.rackspace.feeds.repose</groupId>
+        <artifactId>feeds-repose-filters</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.rackspace.cloudfeeds.repose</groupId>
-    <artifactId>cloudfeeds-filters</artifactId>
+    <groupId>com.rackspace.feeds.repose</groupId>
+    <artifactId>feeds-filters</artifactId>
 
-    <name>cloudfeeds-filters</name>
+    <name>feeds-filters</name>
     <description>Custom Cloud Feeds Repose filters</description>
 
     <packaging>ear</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>com.rackspace.cloudfeeds.repose</groupId>
+            <groupId>com.rackspace.feeds.repose</groupId>
             <artifactId>tenant-feed</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -57,7 +57,7 @@
                                 <filemode>770</filemode>
                                 <sources>
                                     <source>
-                                        <location>${basedir}/../cloudfeeds-filters/target/cloudfeeds-filters-${project.version}.ear</location>
+                                        <location>${basedir}/../feeds-filters/target/feeds-filters-${project.version}.ear</location>
                                     </source>
                                 </sources>
                             </mapping>
@@ -98,7 +98,7 @@
 
                     <modules>
                         <jarModule>
-                            <groupId>com.rackspace.cloudfeeds.repose</groupId>
+                            <groupId>com.rackspace.feeds.repose</groupId>
                             <artifactId>tenant-feed</artifactId>
                         </jarModule>
                     </modules>
