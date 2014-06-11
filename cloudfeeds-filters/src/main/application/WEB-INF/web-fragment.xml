@@ -6,5 +6,4 @@
         <filter-name>tenant-feed</filter-name>
         <filter-class>com.rackspace.cloudfeeds.repose.TenantFilter</filter-class>
     </filter>
-
 </web-fragment>
