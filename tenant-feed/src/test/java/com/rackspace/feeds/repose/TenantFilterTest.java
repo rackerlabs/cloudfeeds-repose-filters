@@ -1,24 +1,9 @@
-package com.rackspace.cloudfeeds.repose;
+package com.rackspace.feeds.repose;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.xml.sax.SAXParseException;
 
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.CharArrayWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 /**
