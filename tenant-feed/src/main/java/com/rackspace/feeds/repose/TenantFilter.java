@@ -42,7 +42,7 @@ public class TenantFilter implements Filter {
 
     public static final String notFound = "Resource not found.";
 
-    public static final String internalError = "Internal Error: ";
+    public static final String internalError = "Internal Error: " +  TenantFilter.class.getName() + ": ";
 
     private static final ObjectPool<XPathExpression> xpathPool = new GenericObjectPool<XPathExpression>( new TidXPathPooledObjectFactory<XPathExpression>() );
 
@@ -109,8 +109,7 @@ public class TenantFilter implements Filter {
             filterChain.doFilter( mutableRequest, mutableResponse );
 
             //read in the entire content
-            String content = new Scanner( mutableResponse.getInputStream() ).useDelimiter( "\\A" ).next();
-            codeContent.setContent( content );
+            codeContent.setContent( new Scanner( mutableResponse.getInputStream() ).useDelimiter( "\\A" ).next() );
 
             codeContent = getResponse( codeContent, tid,
                                        mutableResponse.getHeader( "Content-Type" ).contains( "application/atom+xml" ) );
@@ -119,7 +118,7 @@ public class TenantFilter implements Filter {
 
             // if internal error, report as such
             codeContent.setStatusCode( 503 );
-            codeContent.setContent( getErrorMessage( 503, internalError + ": " + e.getMessage() ) );
+            codeContent.setContent( getErrorMessage( 503, internalError + e.getMessage() ) );
             LOG.error( internalError, e );
         }
         finally {
