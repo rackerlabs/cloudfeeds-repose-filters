@@ -42,7 +42,7 @@ public class TenantFilter implements Filter {
 
     public static final String notFound = "Resource not found.";
 
-    public static final String internalError = "Internal Error: " + TenantFilter.class.getName();
+    public static final String internalError = "Internal Error: ";
 
     private static final ObjectPool<XPathExpression> xpathPool = new GenericObjectPool<XPathExpression>( new TidXPathPooledObjectFactory<XPathExpression>() );
 
@@ -102,12 +102,15 @@ public class TenantFilter implements Filter {
             // get tid before translation rips it out of the request
             Matcher match = matcherPool.borrowObject().reset( mutableRequest.getRequestURI() );
             String tid = match.matches() ? match.group( 1 ) : null;
+            matcherPool.returnObject( match );
+
 
             //Fire off the next one in the filter chain
             filterChain.doFilter( mutableRequest, mutableResponse );
 
             //read in the entire content
-            codeContent.setContent( new Scanner( mutableResponse.getInputStream() ).useDelimiter( "\\A" ).next() );
+            String content = new Scanner( mutableResponse.getInputStream() ).useDelimiter( "\\A" ).next();
+            codeContent.setContent( content );
 
             codeContent = getResponse( codeContent, tid,
                                        mutableResponse.getHeader( "Content-Type" ).contains( "application/atom+xml" ) );
@@ -116,7 +119,7 @@ public class TenantFilter implements Filter {
 
             // if internal error, report as such
             codeContent.setStatusCode( 503 );
-            codeContent.setContent( getErrorMessage( 503, internalError ) );
+            codeContent.setContent( getErrorMessage( 503, internalError + ": " + e.getMessage() ) );
             LOG.error( internalError, e );
         }
         finally {
@@ -182,7 +185,9 @@ public class TenantFilter implements Filter {
 
         @Override
         public XPathExpression create() throws XPathExpressionException {
-            return (XPathExpression)xPathfactory.newXPath().compile( "/entry/category[starts-with(@term, \"tid:\")]/@term" );
+            synchronized ( this ) {
+                return (XPathExpression)xPathfactory.newXPath().compile( "/entry/category[starts-with(@term, \"tid:\")]/@term" );
+            }
         }
 
         @Override
