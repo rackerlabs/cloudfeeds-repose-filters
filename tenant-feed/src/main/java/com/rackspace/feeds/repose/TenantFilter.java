@@ -117,8 +117,8 @@ public class TenantFilter implements Filter {
         catch ( Exception e ) {
 
             // if internal error, report as such
-            codeContent.setStatusCode( 503 );
-            codeContent.setContent( getErrorMessage( 503, internalError + e.getMessage() ) );
+            codeContent.setStatusCode( 500 );
+            codeContent.setContent( getErrorMessage( 500, internalError + e.getMessage() ) );
             LOG.error( internalError, e );
         }
         finally {
@@ -130,7 +130,7 @@ public class TenantFilter implements Filter {
     }
 
     // making this public so we can easily write unit tests
-    public CodeContent getResponse( CodeContent codeContent,
+    CodeContent getResponse( CodeContent codeContent,
                                     String tid,
                                     boolean isAtomXml ) throws Exception {
         if ( tid != null
