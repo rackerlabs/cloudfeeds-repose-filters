@@ -44,7 +44,9 @@ public class TenantFilter implements Filter {
 
     public static final String internalError = "Internal Error: " +  TenantFilter.class.getName() + ": ";
 
-    private static final ObjectPool<XPathExpression> xpathPool = new GenericObjectPool<XPathExpression>( new TidXPathPooledObjectFactory<XPathExpression>() );
+    private static final ObjectPool<XPathExpression> tidPool = new GenericObjectPool<XPathExpression>( new TidXPathPooledObjectFactory<XPathExpression>() );
+
+    private static final ObjectPool<XPathExpression> privatePool = new GenericObjectPool<XPathExpression>( new PrivateXPathPooledObjectFactory<XPathExpression>() );
 
     private static final ObjectPool<Matcher> matcherPool = new GenericObjectPool<Matcher>( new TidMatcherPooledObjectFactory<Matcher>() );
 
@@ -140,14 +142,25 @@ public class TenantFilter implements Filter {
             Document doc =
                   builderFactory.newDocumentBuilder().parse( new InputSource( new StringReader( codeContent.getContent() ) ) );
 
-            XPathExpression xpath = xpathPool.borrowObject();
+            XPathExpression tidPath = tidPool.borrowObject();
 
-            String contentTid = xpath.evaluate( doc );
+            String contentTid = tidPath.evaluate( doc );
 
-            xpathPool.returnObject( xpath );
+            tidPool.returnObject( tidPath );
 
             // if no match return 404 & insert error message
             if ( !contentTid.equals( "tid:" + tid ) ) {
+
+                codeContent.setStatusCode( 404 );
+                codeContent.setContent( getErrorMessage( 404, notFound ) );
+            }
+
+            XPathExpression privPath = privatePool.borrowObject();
+
+            String s = privPath.evaluate( doc );
+
+            // if private cat exists, insert error
+            if( !privPath.evaluate( doc ).isEmpty() ) {
 
                 codeContent.setStatusCode( 404 );
                 codeContent.setContent( getErrorMessage( 404, notFound ) );
@@ -174,6 +187,24 @@ public class TenantFilter implements Filter {
         public PooledObject<Matcher> wrap( Matcher m ) {
 
             return new DefaultPooledObject<Matcher>( m );
+        }
+    }
+
+    static class PrivateXPathPooledObjectFactory<XPathExpression> extends BasePooledObjectFactory<XPathExpression> {
+
+        static final private XPathFactory xPathfactory = XPathFactory.newInstance();
+
+        @Override
+        public XPathExpression create() throws XPathExpressionException {
+            synchronized ( this ) {
+                return (XPathExpression)xPathfactory.newXPath().compile( "/entry/category[@term = 'cloudfeeds:private']/@term" );
+            }
+        }
+
+        @Override
+        public PooledObject<XPathExpression> wrap( XPathExpression xpath ) {
+
+            return new DefaultPooledObject<XPathExpression>( xpath );
         }
     }
 
