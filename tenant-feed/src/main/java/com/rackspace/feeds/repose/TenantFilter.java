@@ -157,10 +157,12 @@ public class TenantFilter implements Filter {
 
             XPathExpression privPath = privatePool.borrowObject();
 
-            String s = privPath.evaluate( doc );
+            boolean privEvent = !privPath.evaluate( doc ).isEmpty();
+
+            privatePool.returnObject( privPath );
 
             // if private cat exists, insert error
-            if( !privPath.evaluate( doc ).isEmpty() ) {
+            if( privEvent ) {
 
                 codeContent.setStatusCode( 404 );
                 codeContent.setContent( getErrorMessage( 404, notFound ) );
