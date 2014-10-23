@@ -11,10 +11,19 @@
        Custom Repose filters for Cloud Feeds
     </description>
 
+    <properties>
+        <groovy.version>2.2.0</groovy.version>
+        <spock.version>0.7-groovy-2.0</spock.version>
+        <gmaven.version>1.5</gmaven.version>
+        <jasypt.version>1.9.0</jasypt.version>
+        <repose.version>6.1.1.1</repose.version>
+    </properties>
+
+
     <packaging>pom</packaging>
     <modules>
         <module>feeds-filters</module>
-        <module>tenant-feed</module>
+        <module>json-xml-filter</module>
     </modules>
 
     <scm>
@@ -54,9 +63,39 @@
         <dependencies>
 
             <dependency>
+                <groupId>io.fastjson</groupId>
+                <artifactId>boon</artifactId>
+                <version>0.29</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>stax</groupId>
+                <artifactId>stax</artifactId>
+                <version>1.2.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.java.dev.stax-utils</groupId>
+                <artifactId>stax-utils</artifactId>
+                <version>20070216</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.rackspace.papi.commons</groupId>
                 <artifactId>utilities</artifactId>
-                <version>5.0.0</version>
+                <version>${repose.version}</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -87,6 +126,18 @@
             </dependency>
 
             <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>${groovy.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.spockframework</groupId>
+                <artifactId>spock-core</artifactId>
+                <version>${spock.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
                 <version>1.9.5</version>
@@ -98,6 +149,13 @@
                 <artifactId>junit</artifactId>
                 <version>4.8.2</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

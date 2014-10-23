@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>com.rackspace.feeds.repose</groupId>
-            <artifactId>tenant-feed</artifactId>
+            <artifactId>json-xml-filter</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -97,7 +97,7 @@
                     <modules>
                         <jarModule>
                             <groupId>com.rackspace.feeds.repose</groupId>
-                            <artifactId>tenant-feed</artifactId>
+                            <artifactId>json-xml-filter</artifactId>
                         </jarModule>
                     </modules>
                 </configuration>
