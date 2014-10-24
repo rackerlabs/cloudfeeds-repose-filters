@@ -106,8 +106,6 @@ public class JsonXmlFilter implements Filter {
                 mutableRequest.setInputStream( istream );
                 mutableRequest.replaceHeader( CONTENT_TYPE, ATOM_TYPE );
 
-                mutableRequest.replaceHeader( "Accept", ATOM_TYPE );
-
                 filterChain.doFilter( mutableRequest, mutableResponse );
 
                 if ( mutableResponse.getStatus() == 400 ) {
