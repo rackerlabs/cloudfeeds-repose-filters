@@ -2,7 +2,6 @@ package com.rackspace.feeds.repose
 
 import org.apache.commons.io.IOUtils
 import org.boon.json.JsonException
-import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 import com.rackspace.feeds.repose.JsonXmlFilter.JSONException
@@ -19,7 +18,7 @@ class JsonXmlFilterTest extends Specification {
 
         when:
         JsonXmlFilter filter = new JsonXmlFilter()
-        String xml= filter.getJSON( IOUtils.toInputStream( json) )
+        String xml= filter.json2Xml( IOUtils.toInputStream( json) )
 
         then:
         assert expected == xml
@@ -464,7 +463,7 @@ def  "json -> xml exception: #label"( String label, String json, Class clazz ) {
     when:
     JsonXmlFilter filter = new JsonXmlFilter()
 
-    filter.getJSON(IOUtils.toInputStream(json))
+    filter.json2Xml(IOUtils.toInputStream(json))
 
     then:
     thrown clazz

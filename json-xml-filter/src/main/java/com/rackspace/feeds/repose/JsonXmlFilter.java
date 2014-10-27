@@ -97,7 +97,7 @@ public class JsonXmlFilter implements Filter {
 
                 LOG.debug( "Processing JSON" );
 
-                String xmlOutput = getJSON( servletRequest.getInputStream() );
+                String xmlOutput = json2Xml( servletRequest.getInputStream() );
 
                 LOG.debug( "XML output: " + xmlOutput );
 
@@ -128,10 +128,6 @@ public class JsonXmlFilter implements Filter {
                 LOG.error( getClass().getName(), e );
                 mutableResponse.sendError( 500, jsonEscape( e.getMessage() ) );
 
-            } finally {
-
-                mutableRequest.replaceHeader( "Accept", ATOM_JSON );
-                mutableResponse.setContentType( ATOM_JSON );
             }
         }
         else {
@@ -149,7 +145,7 @@ public class JsonXmlFilter implements Filter {
         return type != null && type.equals( ATOM_JSON ) && method.equals( POST );
     }
 
-    protected String getJSON( InputStream istream ) throws JSONException, JsonException, XMLStreamException {
+    protected String json2Xml( InputStream istream ) throws JSONException, JsonException, XMLStreamException {
 
         JsonParserAndMapper parser = JSON_FACTORY.createFastParser();
 
