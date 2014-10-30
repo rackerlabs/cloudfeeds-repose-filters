@@ -7,9 +7,7 @@ import javanet.staxutils.IndentingXMLStreamWriter;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.collections.BidiMap;
-import org.boon.json.JsonException;
-import org.boon.json.JsonParserAndMapper;
-import org.boon.json.JsonParserFactory;
+import org.boon.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,22 +48,27 @@ public class JsonXmlFilter implements Filter {
 
     static private Logger LOG = LoggerFactory.getLogger( JsonXmlFilter.class );
     static private JsonParserFactory JSON_FACTORY;
+    static private JsonSerializerFactory JSON_SERIALIZER_FACTORY;
     static private XMLOutputFactory XML_FACTORY = XMLOutputFactory.newInstance();
     static final String TYPE = "@type";
     static final String TEXT = "@text";
     static final String NS = "ns";
-    static final String ATOM_JSON = "application/vnd.rackspace.atom+json";
+    static final String RAX_ATOM_JSON = "application/vnd.rackspace.atom+json";
+    static final String JSON_CTYPE = "application/json";
+    static final String XML_CTYPE = "application/xml";
     static final String CONTENT_TYPE = "Content-Type";
     static final String ATOM_TYPE = "application/atom+xml";
     static final String POST = "POST";
     static final String ATOM_NS = "http://www.w3.org/2005/Atom";
     static final String ERROR_PREFACE = "The following error was encountered after the JSON body was converted to XML: ";
     static final String JSON_ERROR_PREFACE = "Unable to parse invalid JSON: ";
+    static final String TYPE_ATTR = "type";
 
     static {
 
         JSON_FACTORY = new JsonParserFactory();
         JSON_FACTORY.setCheckDates( false );
+        JSON_SERIALIZER_FACTORY = new JsonSerializerFactory();
     }
 
     @Override
@@ -142,7 +145,7 @@ public class JsonXmlFilter implements Filter {
     }
 
     private boolean isJsonPost( String type, String method ) {
-        return type != null && type.equals( ATOM_JSON ) && method.equals( POST );
+        return type != null && type.equals(RAX_ATOM_JSON) && method.equals( POST );
     }
 
     protected String json2Xml( InputStream istream ) throws JSONException, JsonException, XMLStreamException {
@@ -159,6 +162,7 @@ public class JsonXmlFilter implements Filter {
 
         StringWriter writer = new StringWriter();
 
+        XML_FACTORY.setProperty("escapeCharacters", false);
         XMLStreamWriter xmlWriter = new IndentingXMLStreamWriter( XML_FACTORY.createXMLStreamWriter( writer ) );
 
         xmlWriter.writeStartDocument( );
@@ -239,6 +243,30 @@ public class JsonXmlFilter implements Filter {
                 }
             }
 
+            if ( key.equals("content") ) {
+                String typeValue = (String) map.get(TYPE_ATTR);
+
+                // CF-154: handle JSON events with content type="application/json".
+                // This will go in as <content type="application/json">...</content>
+                if ( typeValue != null && typeValue.equals(JSON_CTYPE) ) {
+                    xmlWriter.writeAttribute(TYPE_ATTR, JSON_CTYPE);
+                    Object textValue = map.get(TEXT);
+                    if ( textValue != null && textValue instanceof Map ) {
+                        Map jsonContent = (Map) textValue;
+
+                        final JsonSerializer jsonSerializer = JSON_SERIALIZER_FACTORY.create();
+                        Object obj = jsonSerializer.serialize(jsonContent);
+                        xmlWriter.writeCharacters(obj.toString());
+                        xmlWriter.writeEndElement();
+                        return prefixInt;
+                    } else {
+                        throw new JSONException("JSON content object with type='application/json' must have @text string value and @text must be parseable as Map");
+                    }
+                } else if ( typeValue != null && typeValue.equals(XML_CTYPE) ) {
+                    throw new JSONException("JSON content object must not has type='application/xml'");
+                }
+            }
+
             addContentType( key, xmlWriter );
 
             // write all attributes first
@@ -316,7 +344,7 @@ public class JsonXmlFilter implements Filter {
 
     private void addContentType( String key, XMLStreamWriter xmlWriter ) throws XMLStreamException {
         if( key.equals( "content" ) ) {
-            xmlWriter.writeAttribute( "type", "application/xml" );
+            xmlWriter.writeAttribute(TYPE_ATTR, "application/xml");
         }
     }
 
