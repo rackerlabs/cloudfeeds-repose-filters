@@ -25,6 +25,90 @@ class JsonXmlFilterTest extends Specification {
 
         where:
         [label, json, expected] << [
+                [
+                        "Valid JSON with categories and links",
+                        """
+{ "entry" : {
+    "@type" : "http://www.w3.org/2005/Atom",
+    "title" : {
+        "@text" : "totally tubular title",
+        "type" : "text"
+    },
+    "category": [
+      {
+        "term": "DFW1"
+      },
+      {
+        "term": "tid:1234"
+      },
+      {
+        "term": "some.random.category"
+      }
+    ],
+    "link": [
+      {
+        "href": "https://myhost/detail.html",
+        "rel": "detail"
+      },
+      {
+        "href": "https://myhost/contact.html",
+        "rel": "contact"
+      }
+    ],
+    "content" : {
+        "event" : {
+            "@type" : "http://docs.rackspace.com/core/event",
+            "endTime" : "2012-06-15T10:19:52Z",
+            "startTime" : "2012-06-14T10:19:52Z",
+            "region" : "DFW",
+            "dataCenter" : "DFW1",
+            "type" : "USAGE",
+            "id" : "8d89673c-c989-11e1-895a-0b3d632a8a89",
+            "resourceId" : "3863d42a-ec9a-11e1-8e12-df8baa3ca440",
+            "tenantId" : "1234",
+            "version" : "1",
+            "product" : {
+                "@type" : "http://docs.rackspace.com/event/emailapps_msservice",
+                "serviceCode" : "EmailAppsMSService",
+                "version" : "1",
+                "key" : "(domain=5002_domain_2.com)|(service=5002_domain_2.com)",
+                "productType" : "lync",
+                "operation" : "UPDATE",
+                "status" : "COMPLETED",
+                "request" : "HTTP GET",
+                "response" : "200",
+                "dependent" : [
+                    {
+                        "key" : "(domain=1002_domain_200.com)|(service=1002_domain_100.com)"
+                    },
+                    {
+                        "key" : "(domain=2002_domain_200.com)|(service=2002_domain_200.com)"
+                    }
+                ]
+            }
+        }
+    }
+  }
+}
+""",
+                        """<?xml version="1.0" ?>
+<ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:content type="application/xml">
+    <ns1:event xmlns:ns1="http://docs.rackspace.com/core/event" dataCenter="DFW1" endTime="2012-06-15T10:19:52Z" id="8d89673c-c989-11e1-895a-0b3d632a8a89" region="DFW" resourceId="3863d42a-ec9a-11e1-8e12-df8baa3ca440" startTime="2012-06-14T10:19:52Z" tenantId="1234" type="USAGE" version="1">
+      <ns2:product xmlns:ns2="http://docs.rackspace.com/event/emailapps_msservice" key="(domain=5002_domain_2.com)|(service=5002_domain_2.com)" operation="UPDATE" productType="lync" request="HTTP GET" response="200" serviceCode="EmailAppsMSService" status="COMPLETED" version="1">
+        <ns2:dependent key="(domain=1002_domain_200.com)|(service=1002_domain_100.com)"></ns2:dependent>
+        <ns2:dependent key="(domain=2002_domain_200.com)|(service=2002_domain_200.com)"></ns2:dependent>
+      </ns2:product>
+    </ns1:event>
+  </ns0:content>
+  <ns0:title type="text">totally tubular title</ns0:title>
+  <ns0:category term="DFW1"/>
+  <ns0:category term="tid:1234"/>
+  <ns0:category term="some.random.category"/>
+  <ns0:link href="https://myhost/detail.html" rel="detail"/>
+  <ns0:link href="https://myhost/contact.html" rel="contact"/>
+</ns0:entry>"""
+                ],
                 [       "Mixed Content (JSON inside XML)",
                         """
 {
@@ -98,65 +182,6 @@ class JsonXmlFilterTest extends Specification {
   <ns0:title type="text">Dedicated vCloud event</ns0:title>
 </ns0:entry>"""
                 ],
-                [
-                        "Valid JSON",
-
-                        """
-{ "entry" : {
-    "@type" : "http://www.w3.org/2005/Atom",
-    "title" : {
-        "@text" : "totally tubular title",
-        "type" : "text"
-    },
-    "content" : {
-        "event" : {
-            "@type" : "http://docs.rackspace.com/core/event",
-            "endTime" : "2012-06-15T10:19:52Z",
-            "startTime" : "2012-06-14T10:19:52Z",
-            "region" : "DFW",
-            "dataCenter" : "DFW1",
-            "type" : "USAGE",
-            "id" : "8d89673c-c989-11e1-895a-0b3d632a8a89",
-            "resourceId" : "3863d42a-ec9a-11e1-8e12-df8baa3ca440",
-            "tenantId" : "1234",
-            "version" : "1",
-            "product" : {
-                "@type" : "http://docs.rackspace.com/event/emailapps_msservice",
-                "serviceCode" : "EmailAppsMSService",
-                "version" : "1",
-                "key" : "(domain=5002_domain_2.com)|(service=5002_domain_2.com)",
-                "productType" : "lync",
-                "operation" : "UPDATE",
-                "status" : "COMPLETED",
-                "request" : "HTTP GET",
-                "response" : "200",
-                "dependent" : [
-                    {
-                        "key" : "(domain=1002_domain_200.com)|(service=1002_domain_100.com)"
-                    },
-                    {
-                        "key" : "(domain=2002_domain_200.com)|(service=2002_domain_200.com)"
-                    }
-                ]
-            }
-        }
-    }
-  }
-}
-""",
-                        """<?xml version="1.0" ?>
-<ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
-  <ns0:content type="application/xml">
-    <ns1:event xmlns:ns1="http://docs.rackspace.com/core/event" dataCenter="DFW1" endTime="2012-06-15T10:19:52Z" id="8d89673c-c989-11e1-895a-0b3d632a8a89" region="DFW" resourceId="3863d42a-ec9a-11e1-8e12-df8baa3ca440" startTime="2012-06-14T10:19:52Z" tenantId="1234" type="USAGE" version="1">
-      <ns2:product xmlns:ns2="http://docs.rackspace.com/event/emailapps_msservice" key="(domain=5002_domain_2.com)|(service=5002_domain_2.com)" operation="UPDATE" productType="lync" request="HTTP GET" response="200" serviceCode="EmailAppsMSService" status="COMPLETED" version="1">
-        <ns2:dependent key="(domain=1002_domain_200.com)|(service=1002_domain_100.com)"></ns2:dependent>
-        <ns2:dependent key="(domain=2002_domain_200.com)|(service=2002_domain_200.com)"></ns2:dependent>
-      </ns2:product>
-    </ns1:event>
-  </ns0:content>
-  <ns0:title type="text">totally tubular title</ns0:title>
-</ns0:entry>"""
-        ],
                 [
                         "JSON with same namespace declared multiple times",
                         """

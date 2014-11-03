@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -63,6 +64,8 @@ public class JsonXmlFilter implements Filter {
     static final String ERROR_PREFACE = "The following error was encountered after the JSON body was converted to XML: ";
     static final String JSON_ERROR_PREFACE = "Unable to parse invalid JSON: ";
     static final String TYPE_ATTR = "type";
+    static final String CATEGORY = "category";
+    static final String LINK = "link";
 
     static {
 
@@ -315,9 +318,19 @@ public class JsonXmlFilter implements Filter {
 
             List<Map> list = (List<Map>)value;
 
-            for( Map elem : list ) {
-
-                prefixInt = writeNode( key, elem, xmlWriter, prefixInt, nsPrefixMap, prefix );
+            // handle category/link differently
+            if ( key.equals(CATEGORY) || key.equals(LINK) ) {
+                for ( Map elem: list ) {
+                    xmlWriter.writeEmptyElement(prefix, key, ATOM_NS);
+                    Set<String> keys = elem.keySet();
+                    for ( String attrName : keys ) {
+                        xmlWriter.writeAttribute(attrName, (String)elem.get(attrName));
+                    }
+                }
+            } else {
+                for( Map elem : list ) {
+                    prefixInt = writeNode( key, elem, xmlWriter, prefixInt, nsPrefixMap, prefix );
+                }
             }
         }
         else if( isAtomShortHand( prefix, nsPrefixMap ) ) {
