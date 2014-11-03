@@ -25,6 +25,79 @@ class JsonXmlFilterTest extends Specification {
 
         where:
         [label, json, expected] << [
+                [       "Mixed Content (JSON inside XML)",
+                        """
+{
+  "entry": {
+    "updated": "2014-10-29T16:24:02.856Z",
+    "title": {
+      "@text": "Dedicated vCloud event",
+      "type": "text"
+    },
+    "@type": "http://www.w3.org/2005/Atom",
+    "content": {
+      "@text": {
+        "vmProperties": {
+          "containerOS": "Microsoft Windows Server 2012 (64-bit)",
+          "cpuInfo": {
+            "coresPerSocket": 1,
+            "cpuCount": 4
+          },
+          "computerName": "WindowsServ-001",
+          "hypervisor": "581846",
+          "memoryMb": "4096",
+          "vcdName": "vcd02-2848639.mv.rackspace.com",
+          "organization": "urn:vcloud:org:0bc35ece-34d8-45bc-a61e-9e223e022165",
+          "vmName": "WindowsServer_2012_R2_Standard_vcloud_core",
+          "networks": [
+            {
+              "isPrimary": "true",
+              "vlan": "1470",
+              "ipAddress": "192.168.100.5",
+              "name": "ExNet-Inside-VLAN1470"
+            }
+          ],
+          "vcdUrn": "urn:vcloud:vm:fc51f8a1-11c5-4f78-89bf-611af92d8b83",
+          "vcenterUuid": "4219fe9a-fc2d-cd52-d55d-4d6842c4beb2"
+        },
+        "datacenter": "IAD3",
+        "timestamp": "2014-10-29T16:23:13.431+0000",
+        "source": "qe.virtops.rackspacecloud.com",
+        "raxData": {
+          "osName.WINDOWS_2012_R2_STD_X64": {
+            "category": "osName",
+            "attributes": {
+              "Dedicated vCloud Director OS Type": "WINDOWS"
+            },
+            "type": "DeviceConfig",
+            "name": "WINDOWS_2012_R2_STD_X64"
+          },
+          "platform.DVC_WINDOWS_UNSUPPORTED": {
+            "category": "platform",
+            "attributes": {},
+            "type": "DeviceConfig",
+            "name": "DVC_WINDOWS_UNSUPPORTED"
+          }
+        },
+        "type": "virtops.vm.create",
+        "tenant": "hybrid:2848639"
+      },
+      "type": "application/json"
+    },
+    "published": "2014-10-29T16:24:02.856Z",
+    "id": "urn:uuid:1f1b37e2-503b-4f32-bc8b-6d1d054efc21"
+  }
+}
+""",
+                        """<?xml version="1.0" ?>
+<ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:id>urn:uuid:1f1b37e2-503b-4f32-bc8b-6d1d054efc21</ns0:id>
+  <ns0:published>2014-10-29T16:24:02.856Z</ns0:published>
+  <ns0:updated>2014-10-29T16:24:02.856Z</ns0:updated>
+  <ns0:content type="application/json">{"datacenter":"IAD3","raxData":{"osName.WINDOWS_2012_R2_STD_X64":{"attributes":{"Dedicated vCloud Director OS Type":"WINDOWS"},"category":"osName","name":"WINDOWS_2012_R2_STD_X64","type":"DeviceConfig"},"platform.DVC_WINDOWS_UNSUPPORTED":{"attributes":{},"category":"platform","name":"DVC_WINDOWS_UNSUPPORTED","type":"DeviceConfig"}},"source":"qe.virtops.rackspacecloud.com","tenant":"hybrid:2848639","timestamp":"2014-10-29T16:23:13.431+0000","type":"virtops.vm.create","vmProperties":{"computerName":"WindowsServ-001","containerOS":"Microsoft Windows Server 2012 (64-bit)","cpuInfo":{"coresPerSocket":1,"cpuCount":4},"hypervisor":"581846","memoryMb":"4096","networks":[{"ipAddress":"192.168.100.5","isPrimary":"true","name":"ExNet-Inside-VLAN1470","vlan":"1470"}],"organization":"urn:vcloud:org:0bc35ece-34d8-45bc-a61e-9e223e022165","vcdName":"vcd02-2848639.mv.rackspace.com","vcdUrn":"urn:vcloud:vm:fc51f8a1-11c5-4f78-89bf-611af92d8b83","vcenterUuid":"4219fe9a-fc2d-cd52-d55d-4d6842c4beb2","vmName":"WindowsServer_2012_R2_Standard_vcloud_core"}}</ns0:content>
+  <ns0:title type="text">Dedicated vCloud event</ns0:title>
+</ns0:entry>"""
+                ],
                 [
                         "Valid JSON",
 
@@ -453,6 +526,41 @@ totally tubular title
     </ns4:event>
   </ns3:content>
 </ns3:entry>"""
+                ],
+                [
+                    "Content type='text'",
+                        """
+{
+    "entry": {
+        "updated": "2014-09-26T23:58:26.939Z",
+        "author": {
+          "name": "Atom Hopper Team"
+        },
+        "title": {
+          "@text": "Slice Action",
+          "type": "text"
+        },
+        "id": "urn:uuid:175317ad-46cd-0902-abb5-8d050219b315",
+        "content": {
+          "type": "text",
+          "@text": "some random text inside the atom content element. should not happen with real product event, but we should not fail"
+        },
+        "published": "2014-09-26T23:58:26.939Z",
+        "@type": "http://www.w3.org/2005/Atom"
+    }
+}
+""",
+                        """<?xml version="1.0" ?>
+<ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:id>urn:uuid:175317ad-46cd-0902-abb5-8d050219b315</ns0:id>
+  <ns0:published>2014-09-26T23:58:26.939Z</ns0:published>
+  <ns0:updated>2014-09-26T23:58:26.939Z</ns0:updated>
+  <ns0:content type="application/xml" type="text">some random text inside the atom content element. should not happen with real product event, but we should not fail</ns0:content>
+  <ns0:author>
+    <ns0:name>Atom Hopper Team</ns0:name>
+  </ns0:author>
+  <ns0:title type="text">Slice Action</ns0:title>
+</ns0:entry>"""
                 ]
         ]
 }
@@ -609,9 +717,73 @@ def  "json -> xml exception: #label"( String label, String json, Class clazz ) {
 }
 }""",
                 JSONException
-        ]
-
-]
+        ],
+        [
+                "content type='application/xml' is not allowed",
+                """
+{
+    "entry": {
+        "updated": "2014-09-26T23:58:26.939Z",
+        "author": {
+          "name": "Atom Hopper Team"
+        },
+        "title": {
+          "@text": "Slice Action",
+          "type": "text"
+        },
+        "id": "urn:uuid:175317ad-46cd-0902-abb5-8d050219b315",
+        "content": {
+          "type": "application/xml",
+          "event": {
+              "@type" : "http://docs.rackspace.com/core/event",
+              "version" : "1",
+              "product" : {
+                "@type" : "http://docs.rackspace.com/event/emailapps_msservice",
+                "response" : "200",
+                "dependent" : [
+                  {
+                    "key" : "(domain=1002_domain_200.com)|(service=1002_domain_100.com)"
+                  },
+                  {
+                    "key" : "(domain=2002_domain_200.com)|(service=2002_domain_200.com)"
+                  }
+                ]
+              }
+          }
+        },
+        "published": "2014-09-26T23:58:26.939Z",
+        "@type": "http://www.w3.org/2005/Atom"
+    }
+}
+"""     ,
+        JSONException
+        ],
+            [
+                    "content type='application/json' must contain json",
+                    """
+{
+    "entry": {
+        "updated": "2014-09-26T23:58:26.939Z",
+        "author": {
+          "name": "Atom Hopper Team"
+        },
+        "title": {
+          "@text": "Slice Action",
+          "type": "text"
+        },
+        "id": "urn:uuid:175317ad-46cd-0902-abb5-8d050219b315",
+        "content": {
+          "type": "application/json",
+          "@text": "some text that is not json"
+        },
+        "published": "2014-09-26T23:58:26.939Z",
+        "@type": "http://www.w3.org/2005/Atom"
+    }
+}
+"""     ,
+        JSONException
+            ]
+    ]
 }
 
     def "escapeJSON"() {
