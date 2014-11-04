@@ -246,7 +246,7 @@ public class JsonXmlFilter implements Filter {
                 }
             }
 
-            if ( key.equals("content") ) {
+            if ( key.equals("content") && isAtomShortHand(prefixP, nsPrefixMap) ) {
                 String typeValue = (String) map.get(TYPE_ATTR);
 
                 // CF-154: handle JSON events with content type="application/json".
