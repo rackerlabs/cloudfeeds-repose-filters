@@ -19,6 +19,7 @@ class JsonXmlFilterTest extends Specification {
         when:
         JsonXmlFilter filter = new JsonXmlFilter()
         String xml= filter.json2Xml( IOUtils.toInputStream( json) )
+        println(xml)
 
         then:
         assert expected == xml
@@ -180,6 +181,86 @@ class JsonXmlFilterTest extends Specification {
   <ns0:updated>2014-10-29T16:24:02.856Z</ns0:updated>
   <ns0:content type="application/json">{"datacenter":"IAD3","raxData":{"osName.WINDOWS_2012_R2_STD_X64":{"attributes":{"Dedicated vCloud Director OS Type":"WINDOWS"},"category":"osName","name":"WINDOWS_2012_R2_STD_X64","type":"DeviceConfig"},"platform.DVC_WINDOWS_UNSUPPORTED":{"attributes":{},"category":"platform","name":"DVC_WINDOWS_UNSUPPORTED","type":"DeviceConfig"}},"source":"qe.virtops.rackspacecloud.com","tenant":"hybrid:2848639","timestamp":"2014-10-29T16:23:13.431+0000","type":"virtops.vm.create","vmProperties":{"computerName":"WindowsServ-001","containerOS":"Microsoft Windows Server 2012 (64-bit)","cpuInfo":{"coresPerSocket":1,"cpuCount":4},"hypervisor":"581846","memoryMb":"4096","networks":[{"ipAddress":"192.168.100.5","isPrimary":"true","name":"ExNet-Inside-VLAN1470","vlan":"1470"}],"organization":"urn:vcloud:org:0bc35ece-34d8-45bc-a61e-9e223e022165","vcdName":"vcd02-2848639.mv.rackspace.com","vcdUrn":"urn:vcloud:vm:fc51f8a1-11c5-4f78-89bf-611af92d8b83","vcenterUuid":"4219fe9a-fc2d-cd52-d55d-4d6842c4beb2","vmName":"WindowsServer_2012_R2_Standard_vcloud_core"}}</ns0:content>
   <ns0:title type="text">Dedicated vCloud event</ns0:title>
+</ns0:entry>"""
+                ],
+                [
+                        "Valid JSON comprehensive Atom entry",
+                        """
+                        {
+                            "entry": {
+                            "category": [
+                                    {
+                                        "term": "rgn:DFW",
+                                        "scheme": "http://docs.rackspace.com",
+                                        "label": "region"
+                                    },
+                                    {
+                                        "term": "dc:DFW1",
+                                        "scheme": "http://docs.rackspace.com",
+                                        "label": "datacenter"
+                                    },
+                                    {
+                                        "term": "tid:123456",
+                                        "scheme": "http://docs.rackspace.com",
+                                        "label": "tenantId"
+                                    }
+                            ],
+                            "updated": "2005-07-31T12:29:29Z",
+                            "xml:base": "http://docs.rackspace.com/",
+                            "title": {
+                                "@text": "Less: <b> < </b>",
+                                "type": "html"
+                            },
+                            "author": {
+                                "name": "Joe Racker",
+                                "uri": "http://docs.rackspace.com/"
+                            },
+                            "summary": {
+                                "@text": "Summary: <b>HAVE A GREAT DAY!</b>",
+                                "type": "html"
+                            },
+                            "content": {
+                                "@text": "<p><i>[Update: The Atom draft is finished.]</i></p>",
+                                "xml:base": "http://diveintomark.org/",
+                                "xml:lang": "en",
+                                "type": "html"
+                            },
+                            "xml:lang": "en",
+                            "link": [
+                                    {
+                                        "href": "http://example.org/2005/04/02/atom",
+                                        "rel": "alternate"
+                                    },
+                                    {
+                                        "href": "http://example.org/audio/ph34r_my_podcast.mp3",
+                                        "rel": "enclosure"
+                                    }
+                            ],
+                            "published": "2003-12-13T08:29:29-04:00",
+                            "id": "tag:example.org,2003:4.2397",
+                            "@type": "http://www.w3.org/2005/Atom"
+                        }
+                }
+""",
+                        """<?xml version="1.0" ?>
+<ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:id>tag:example.org,2003:4.2397</ns0:id>
+  <ns0:published>2003-12-13T08:29:29-04:00</ns0:published>
+  <ns0:updated>2005-07-31T12:29:29Z</ns0:updated>
+  <ns0:xml:base>http://docs.rackspace.com/</ns0:xml:base>
+  <ns0:xml:lang>en</ns0:xml:lang>
+  <ns0:summary type="html">Summary: &lt;b&gt;HAVE A GREAT DAY!&lt;/b&gt;</ns0:summary>
+  <ns0:content type="application/xml" type="html" xml:base="http://diveintomark.org/" xml:lang="en">&lt;p&gt;&lt;i&gt;[Update: The Atom draft is finished.]&lt;/i&gt;&lt;/p&gt;</ns0:content>
+  <ns0:author>
+    <ns0:name>Joe Racker</ns0:name>
+    <ns0:uri>http://docs.rackspace.com/</ns0:uri>
+  </ns0:author>
+  <ns0:title type="html">Less: &lt;b&gt; &lt; &lt;/b&gt;</ns0:title>
+  <ns0:category label="region" scheme="http://docs.rackspace.com" term="rgn:DFW"/>
+  <ns0:category label="datacenter" scheme="http://docs.rackspace.com" term="dc:DFW1"/>
+  <ns0:category label="tenantId" scheme="http://docs.rackspace.com" term="tid:123456"/>
+  <ns0:link href="http://example.org/2005/04/02/atom" rel="alternate"/>
+  <ns0:link href="http://example.org/audio/ph34r_my_podcast.mp3" rel="enclosure"/>
 </ns0:entry>"""
                 ],
                 [

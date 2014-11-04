@@ -165,7 +165,7 @@ public class JsonXmlFilter implements Filter {
 
         StringWriter writer = new StringWriter();
 
-        XML_FACTORY.setProperty("escapeCharacters", false);
+        XML_FACTORY.setProperty("escapeCharacters", true);
         XMLStreamWriter xmlWriter = new IndentingXMLStreamWriter( XML_FACTORY.createXMLStreamWriter( writer ) );
 
         xmlWriter.writeStartDocument( );
@@ -319,7 +319,7 @@ public class JsonXmlFilter implements Filter {
             List<Map> list = (List<Map>)value;
 
             // handle category/link differently
-            if ( key.equals(CATEGORY) || key.equals(LINK) ) {
+            if ( isAtomShortHand(prefixP, nsPrefixMap) && (key.equals(CATEGORY) || key.equals(LINK)) ) {
                 for ( Map elem: list ) {
                     xmlWriter.writeEmptyElement(prefix, key, ATOM_NS);
                     Set<String> keys = elem.keySet();
