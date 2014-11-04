@@ -19,12 +19,97 @@ class JsonXmlFilterTest extends Specification {
         when:
         JsonXmlFilter filter = new JsonXmlFilter()
         String xml= filter.json2Xml( IOUtils.toInputStream( json) )
+        println(xml)
 
         then:
         assert expected == xml
 
         where:
         [label, json, expected] << [
+                [
+                        "Valid JSON with categories and links",
+                        """
+{ "entry" : {
+    "@type" : "http://www.w3.org/2005/Atom",
+    "title" : {
+        "@text" : "totally tubular title",
+        "type" : "text"
+    },
+    "category": [
+      {
+        "term": "DFW1"
+      },
+      {
+        "term": "tid:1234"
+      },
+      {
+        "term": "some.random.category"
+      }
+    ],
+    "link": [
+      {
+        "href": "https://myhost/detail.html",
+        "rel": "detail"
+      },
+      {
+        "href": "https://myhost/contact.html",
+        "rel": "contact"
+      }
+    ],
+    "content" : {
+        "event" : {
+            "@type" : "http://docs.rackspace.com/core/event",
+            "endTime" : "2012-06-15T10:19:52Z",
+            "startTime" : "2012-06-14T10:19:52Z",
+            "region" : "DFW",
+            "dataCenter" : "DFW1",
+            "type" : "USAGE",
+            "id" : "8d89673c-c989-11e1-895a-0b3d632a8a89",
+            "resourceId" : "3863d42a-ec9a-11e1-8e12-df8baa3ca440",
+            "tenantId" : "1234",
+            "version" : "1",
+            "product" : {
+                "@type" : "http://docs.rackspace.com/event/emailapps_msservice",
+                "serviceCode" : "EmailAppsMSService",
+                "version" : "1",
+                "key" : "(domain=5002_domain_2.com)|(service=5002_domain_2.com)",
+                "productType" : "lync",
+                "operation" : "UPDATE",
+                "status" : "COMPLETED",
+                "request" : "HTTP GET",
+                "response" : "200",
+                "dependent" : [
+                    {
+                        "key" : "(domain=1002_domain_200.com)|(service=1002_domain_100.com)"
+                    },
+                    {
+                        "key" : "(domain=2002_domain_200.com)|(service=2002_domain_200.com)"
+                    }
+                ]
+            }
+        }
+    }
+  }
+}
+""",
+                        """<?xml version="1.0" ?>
+<ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:content type="application/xml">
+    <ns1:event xmlns:ns1="http://docs.rackspace.com/core/event" dataCenter="DFW1" endTime="2012-06-15T10:19:52Z" id="8d89673c-c989-11e1-895a-0b3d632a8a89" region="DFW" resourceId="3863d42a-ec9a-11e1-8e12-df8baa3ca440" startTime="2012-06-14T10:19:52Z" tenantId="1234" type="USAGE" version="1">
+      <ns2:product xmlns:ns2="http://docs.rackspace.com/event/emailapps_msservice" key="(domain=5002_domain_2.com)|(service=5002_domain_2.com)" operation="UPDATE" productType="lync" request="HTTP GET" response="200" serviceCode="EmailAppsMSService" status="COMPLETED" version="1">
+        <ns2:dependent key="(domain=1002_domain_200.com)|(service=1002_domain_100.com)"></ns2:dependent>
+        <ns2:dependent key="(domain=2002_domain_200.com)|(service=2002_domain_200.com)"></ns2:dependent>
+      </ns2:product>
+    </ns1:event>
+  </ns0:content>
+  <ns0:title type="text">totally tubular title</ns0:title>
+  <ns0:category term="DFW1"/>
+  <ns0:category term="tid:1234"/>
+  <ns0:category term="some.random.category"/>
+  <ns0:link href="https://myhost/detail.html" rel="detail"/>
+  <ns0:link href="https://myhost/contact.html" rel="contact"/>
+</ns0:entry>"""
+                ],
                 [       "Mixed Content (JSON inside XML)",
                         """
 {
@@ -99,64 +184,85 @@ class JsonXmlFilterTest extends Specification {
 </ns0:entry>"""
                 ],
                 [
-                        "Valid JSON",
-
+                        "Valid JSON comprehensive Atom entry",
                         """
-{ "entry" : {
-    "@type" : "http://www.w3.org/2005/Atom",
-    "title" : {
-        "@text" : "totally tubular title",
-        "type" : "text"
-    },
-    "content" : {
-        "event" : {
-            "@type" : "http://docs.rackspace.com/core/event",
-            "endTime" : "2012-06-15T10:19:52Z",
-            "startTime" : "2012-06-14T10:19:52Z",
-            "region" : "DFW",
-            "dataCenter" : "DFW1",
-            "type" : "USAGE",
-            "id" : "8d89673c-c989-11e1-895a-0b3d632a8a89",
-            "resourceId" : "3863d42a-ec9a-11e1-8e12-df8baa3ca440",
-            "tenantId" : "1234",
-            "version" : "1",
-            "product" : {
-                "@type" : "http://docs.rackspace.com/event/emailapps_msservice",
-                "serviceCode" : "EmailAppsMSService",
-                "version" : "1",
-                "key" : "(domain=5002_domain_2.com)|(service=5002_domain_2.com)",
-                "productType" : "lync",
-                "operation" : "UPDATE",
-                "status" : "COMPLETED",
-                "request" : "HTTP GET",
-                "response" : "200",
-                "dependent" : [
-                    {
-                        "key" : "(domain=1002_domain_200.com)|(service=1002_domain_100.com)"
-                    },
-                    {
-                        "key" : "(domain=2002_domain_200.com)|(service=2002_domain_200.com)"
-                    }
-                ]
-            }
-        }
-    }
-  }
-}
+                        {
+                            "entry": {
+                            "category": [
+                                    {
+                                        "term": "rgn:DFW",
+                                        "scheme": "http://docs.rackspace.com",
+                                        "label": "region"
+                                    },
+                                    {
+                                        "term": "dc:DFW1",
+                                        "scheme": "http://docs.rackspace.com",
+                                        "label": "datacenter"
+                                    },
+                                    {
+                                        "term": "tid:123456",
+                                        "scheme": "http://docs.rackspace.com",
+                                        "label": "tenantId"
+                                    }
+                            ],
+                            "updated": "2005-07-31T12:29:29Z",
+                            "xml:base": "http://docs.rackspace.com/",
+                            "title": {
+                                "@text": "Less: <b> < </b>",
+                                "type": "html"
+                            },
+                            "author": {
+                                "name": "Joe Racker",
+                                "uri": "http://docs.rackspace.com/"
+                            },
+                            "summary": {
+                                "@text": "Summary: <b>HAVE A GREAT DAY!</b>",
+                                "type": "html"
+                            },
+                            "content": {
+                                "@text": "<p><i>[Update: The Atom draft is finished.]</i></p>",
+                                "xml:base": "http://diveintomark.org/",
+                                "xml:lang": "en",
+                                "type": "html"
+                            },
+                            "xml:lang": "en",
+                            "link": [
+                                    {
+                                        "href": "http://example.org/2005/04/02/atom",
+                                        "rel": "alternate"
+                                    },
+                                    {
+                                        "href": "http://example.org/audio/ph34r_my_podcast.mp3",
+                                        "rel": "enclosure"
+                                    }
+                            ],
+                            "published": "2003-12-13T08:29:29-04:00",
+                            "id": "tag:example.org,2003:4.2397",
+                            "@type": "http://www.w3.org/2005/Atom"
+                        }
+                }
 """,
                         """<?xml version="1.0" ?>
 <ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
-  <ns0:content type="application/xml">
-    <ns1:event xmlns:ns1="http://docs.rackspace.com/core/event" dataCenter="DFW1" endTime="2012-06-15T10:19:52Z" id="8d89673c-c989-11e1-895a-0b3d632a8a89" region="DFW" resourceId="3863d42a-ec9a-11e1-8e12-df8baa3ca440" startTime="2012-06-14T10:19:52Z" tenantId="1234" type="USAGE" version="1">
-      <ns2:product xmlns:ns2="http://docs.rackspace.com/event/emailapps_msservice" key="(domain=5002_domain_2.com)|(service=5002_domain_2.com)" operation="UPDATE" productType="lync" request="HTTP GET" response="200" serviceCode="EmailAppsMSService" status="COMPLETED" version="1">
-        <ns2:dependent key="(domain=1002_domain_200.com)|(service=1002_domain_100.com)"></ns2:dependent>
-        <ns2:dependent key="(domain=2002_domain_200.com)|(service=2002_domain_200.com)"></ns2:dependent>
-      </ns2:product>
-    </ns1:event>
-  </ns0:content>
-  <ns0:title type="text">totally tubular title</ns0:title>
+  <ns0:id>tag:example.org,2003:4.2397</ns0:id>
+  <ns0:published>2003-12-13T08:29:29-04:00</ns0:published>
+  <ns0:updated>2005-07-31T12:29:29Z</ns0:updated>
+  <ns0:xml:base>http://docs.rackspace.com/</ns0:xml:base>
+  <ns0:xml:lang>en</ns0:xml:lang>
+  <ns0:summary type="html">Summary: &lt;b&gt;HAVE A GREAT DAY!&lt;/b&gt;</ns0:summary>
+  <ns0:content type="application/xml" type="html" xml:base="http://diveintomark.org/" xml:lang="en">&lt;p&gt;&lt;i&gt;[Update: The Atom draft is finished.]&lt;/i&gt;&lt;/p&gt;</ns0:content>
+  <ns0:author>
+    <ns0:name>Joe Racker</ns0:name>
+    <ns0:uri>http://docs.rackspace.com/</ns0:uri>
+  </ns0:author>
+  <ns0:title type="html">Less: &lt;b&gt; &lt; &lt;/b&gt;</ns0:title>
+  <ns0:category label="region" scheme="http://docs.rackspace.com" term="rgn:DFW"/>
+  <ns0:category label="datacenter" scheme="http://docs.rackspace.com" term="dc:DFW1"/>
+  <ns0:category label="tenantId" scheme="http://docs.rackspace.com" term="tid:123456"/>
+  <ns0:link href="http://example.org/2005/04/02/atom" rel="alternate"/>
+  <ns0:link href="http://example.org/audio/ph34r_my_podcast.mp3" rel="enclosure"/>
 </ns0:entry>"""
-        ],
+                ],
                 [
                         "JSON with same namespace declared multiple times",
                         """
