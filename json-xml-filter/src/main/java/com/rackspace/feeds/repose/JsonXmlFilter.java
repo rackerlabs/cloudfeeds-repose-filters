@@ -267,10 +267,12 @@ public class JsonXmlFilter implements Filter {
                     }
                 } else if ( typeValue != null && typeValue.equals(XML_CTYPE) ) {
                     throw new JSONException("JSON content object must not has type='application/xml'");
+                } else if ( typeValue == null ) {
+                    addContentType(key, xmlWriter);
                 }
+            } else {
+                addContentType(key, xmlWriter);
             }
-
-            addContentType( key, xmlWriter );
 
             // write all attributes first
             // then write all array's and nodes

@@ -206,7 +206,6 @@ class JsonXmlFilterTest extends Specification {
                                     }
                             ],
                             "updated": "2005-07-31T12:29:29Z",
-                            "xml:base": "http://docs.rackspace.com/",
                             "title": {
                                 "@text": "Less: <b> < </b>",
                                 "type": "html"
@@ -221,11 +220,8 @@ class JsonXmlFilterTest extends Specification {
                             },
                             "content": {
                                 "@text": "<p><i>[Update: The Atom draft is finished.]</i></p>",
-                                "xml:base": "http://diveintomark.org/",
-                                "xml:lang": "en",
                                 "type": "html"
                             },
-                            "xml:lang": "en",
                             "link": [
                                     {
                                         "href": "http://example.org/2005/04/02/atom",
@@ -247,10 +243,8 @@ class JsonXmlFilterTest extends Specification {
   <ns0:id>tag:example.org,2003:4.2397</ns0:id>
   <ns0:published>2003-12-13T08:29:29-04:00</ns0:published>
   <ns0:updated>2005-07-31T12:29:29Z</ns0:updated>
-  <ns0:xml:base>http://docs.rackspace.com/</ns0:xml:base>
-  <ns0:xml:lang>en</ns0:xml:lang>
   <ns0:summary type="html">Summary: &lt;b&gt;HAVE A GREAT DAY!&lt;/b&gt;</ns0:summary>
-  <ns0:content type="application/xml" type="html" xml:base="http://diveintomark.org/" xml:lang="en">&lt;p&gt;&lt;i&gt;[Update: The Atom draft is finished.]&lt;/i&gt;&lt;/p&gt;</ns0:content>
+  <ns0:content type="html">&lt;p&gt;&lt;i&gt;[Update: The Atom draft is finished.]&lt;/i&gt;&lt;/p&gt;</ns0:content>
   <ns0:author>
     <ns0:name>Joe Racker</ns0:name>
     <ns0:uri>http://docs.rackspace.com/</ns0:uri>
@@ -661,7 +655,7 @@ totally tubular title
   <ns0:id>urn:uuid:175317ad-46cd-0902-abb5-8d050219b315</ns0:id>
   <ns0:published>2014-09-26T23:58:26.939Z</ns0:published>
   <ns0:updated>2014-09-26T23:58:26.939Z</ns0:updated>
-  <ns0:content type="application/xml" type="text">some random text inside the atom content element. should not happen with real product event, but we should not fail</ns0:content>
+  <ns0:content type="text">some random text inside the atom content element. should not happen with real product event, but we should not fail</ns0:content>
   <ns0:author>
     <ns0:name>Atom Hopper Team</ns0:name>
   </ns0:author>
