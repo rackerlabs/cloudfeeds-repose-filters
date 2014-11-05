@@ -268,10 +268,8 @@ public class JsonXmlFilter implements Filter {
                 } else if ( typeValue != null && typeValue.equals(XML_CTYPE) ) {
                     throw new JSONException("JSON content object must not has type='application/xml'");
                 } else if ( typeValue == null ) {
-                    addContentType(key, xmlWriter);
+                    xmlWriter.writeAttribute(TYPE_ATTR, "application/xml");
                 }
-            } else {
-                addContentType(key, xmlWriter);
             }
 
             // write all attributes first
@@ -342,8 +340,6 @@ public class JsonXmlFilter implements Filter {
             //
             writeStartElement( key, xmlWriter, nsPrefixMap, prefix );
 
-            addContentType( key, xmlWriter );
-
             xmlWriter.writeCharacters( value.toString() );
             xmlWriter.writeEndElement();
         }
@@ -355,12 +351,6 @@ public class JsonXmlFilter implements Filter {
         }
 
         return prefixInt;
-    }
-
-    private void addContentType( String key, XMLStreamWriter xmlWriter ) throws XMLStreamException {
-        if( key.equals( "content" ) ) {
-            xmlWriter.writeAttribute(TYPE_ATTR, "application/xml");
-        }
     }
 
     private boolean isAtomShortHand( String prefix, BidiMap nsPrefixMap ) {
