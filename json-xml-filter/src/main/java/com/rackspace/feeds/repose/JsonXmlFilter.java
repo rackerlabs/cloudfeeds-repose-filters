@@ -42,6 +42,8 @@ import java.util.Set;
  *        nodes and their text values.  The one exception to this is when a map contains a @text node, then all other
  *        key-value pairs in that map are treated as attributes.  Any key-map or key-list pairs in this map are treated
  *        as XML nodes.
+ *   <li> Arbitrary JSON can be submitted by setting type="application/json" in the content node and including the JSON
+ *        as the value of a @text key.
  * </ul>
  *
  */
