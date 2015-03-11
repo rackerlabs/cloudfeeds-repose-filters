@@ -16,7 +16,7 @@
         <spock.version>0.7-groovy-2.0</spock.version>
         <gmaven.version>1.5</gmaven.version>
         <jasypt.version>1.9.0</jasypt.version>
-        <repose.version>6.1.1.1</repose.version>
+        <repose.version>7.0.0.1</repose.version>
     </properties>
 
 
@@ -91,7 +91,7 @@
             </dependency>
 
             <dependency>
-                <groupId>com.rackspace.papi.commons</groupId>
+                <groupId>org.openrepose</groupId>
                 <artifactId>utilities</artifactId>
                 <version>${repose.version}</version>
                 <scope>provided</scope>
@@ -154,6 +154,12 @@
                 <artifactId>javax.servlet-api</artifactId>
                 <version>3.1.0</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

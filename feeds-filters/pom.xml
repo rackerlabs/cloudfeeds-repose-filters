@@ -61,7 +61,7 @@
                             </mapping>
                         </mappings>
                         <requires>
-                            <require>repose</require>
+                            <require>repose-valve</require>
                         </requires>
                     </configuration>
                 </plugin>

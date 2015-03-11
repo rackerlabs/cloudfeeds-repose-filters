@@ -51,9 +51,14 @@
         </dependency>
 
         <dependency>
-            <groupId>com.rackspace.papi.commons</groupId>
+            <groupId>org.openrepose</groupId>
             <artifactId>utilities</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
         </dependency>
 
         <!-- for tests -->

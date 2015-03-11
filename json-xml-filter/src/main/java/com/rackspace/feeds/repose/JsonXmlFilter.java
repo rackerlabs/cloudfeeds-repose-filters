@@ -1,8 +1,8 @@
 package com.rackspace.feeds.repose;
 
-import com.rackspace.papi.commons.util.io.BufferedServletInputStream;
-import com.rackspace.papi.commons.util.servlet.http.MutableHttpServletRequest;
-import com.rackspace.papi.commons.util.servlet.http.MutableHttpServletResponse;
+import org.openrepose.commons.utils.io.BufferedServletInputStream;
+import org.openrepose.commons.utils.servlet.http.MutableHttpServletRequest;
+import org.openrepose.commons.utils.servlet.http.MutableHttpServletResponse;
 import javanet.staxutils.IndentingXMLStreamWriter;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.io.IOUtils;
@@ -11,6 +11,8 @@ import org.boon.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +49,7 @@ import java.util.Set;
  * </ul>
  *
  */
+@Named
 public class JsonXmlFilter implements Filter {
 
     static private Logger LOG = LoggerFactory.getLogger( JsonXmlFilter.class );
