@@ -4,8 +4,6 @@ import org.apache.commons.io.IOUtils
 import org.boon.json.JsonException
 import spock.lang.Specification
 import spock.lang.Unroll
-import com.rackspace.feeds.repose.JsonXmlFilter.JSONException
-
 
 class JsonXmlFilterTest extends Specification {
 
@@ -27,6 +25,114 @@ class JsonXmlFilterTest extends Specification {
         where:
         [label, json, expected] << [
 [
+        "Valid User Access Event",
+        """
+{
+    "entry" : {
+        "@type"   : "http://www.w3.org/2005/Atom",
+        "title"   : "Identity User Access Event",
+        "content" : {
+            "event" : {
+                "typeURI"   : "http://schemas.dmtf.org/cloud/audit/1.0/event",
+                "id"        : "6fa234aea93f38c26fa234aea93f38c2",
+                "eventType" : "activity",
+                "eventTime" : "2015-03-12T13:20:00-05:00",
+                "action"    : "create/post",
+                "outcome"   : "success",
+
+                "initiator" : {
+                    "id"      : "10.1.2.3",
+                    "typeURI" : "network/node",
+                    "name"    : "jackhandy",
+                    "host"    : {
+                        "address" : "10.1.2.3",
+                        "agent"   : "curl/7.8 (i386-redhat-linux-gnu) libcurl 7.8"
+                    }
+                },
+
+                "target" : {
+                    "id"      : "x.x.x.x",
+                    "typeURI" : "service",
+                    "name"    : "IDM",
+                    "host"    : {
+                        "address" : "lon.identity.api.rackspacecloud.com"
+                    }
+                },
+
+                "attachments" : [
+                    {
+                        "name"        : "auditData",
+                        "contentType" : "http://feeds.api.rackspacecloud.com/cadf/user-access-event/auditData",
+                        "content"     :  {
+                            "auditData" : {
+                                "region"          : "DFW",
+                                "dataCenter"      : "DFW1",
+                                "methodLabel"     : "createToken",
+                                "requestURL"      : "https://lon.identity.api.rackspacecloud.com/v2.0/tokens",
+                                "queryString"     : "",
+                                "tenantId"        : "123456",
+                                "responseMessage" : "OK",
+                                "userName"        : "jackhandy",
+                                "roles"           : "xxx"
+                            }
+                        }
+                    }
+                ],
+
+                "observer" : {
+                    "id"      : "IDM-1-1",
+                    "name"    : "repose-6.1.1.1",
+                    "typeURI" : "service/security",
+                    "host" : {
+                        "address" : "repose"
+                    }
+                },
+
+                "reason" : {
+                    "reasonCode" : 200,
+                    "reasonType" : "http://www.iana.org/assignments/http-status-codes/http-status-codes.xml"
+                }
+            }
+        }
+    }
+}
+""",
+        """<?xml version="1.0" ?>
+<ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:title>Identity User Access Event</ns0:title>
+  <ns0:content type="application/xml">
+    <ns1:event xmlns:ns1="http://schemas.dmtf.org/cloud/audit/1.0/event" action="create/post" eventTime="2015-03-12T13:20:00-05:00" eventType="activity" id="6fa234aea93f38c26fa234aea93f38c2" outcome="success" typeURI="http://schemas.dmtf.org/cloud/audit/1.0/event">
+      <ns1:reason reasonCode="200" reasonType="http://www.iana.org/assignments/http-status-codes/http-status-codes.xml"></ns1:reason>
+      <ns1:initiator id="10.1.2.3" name="jackhandy" typeURI="network/node">
+        <ns1:host address="10.1.2.3" agent="curl/7.8 (i386-redhat-linux-gnu) libcurl 7.8"></ns1:host>
+      </ns1:initiator>
+      <ns1:target id="x.x.x.x" name="IDM" typeURI="service">
+        <ns1:host address="lon.identity.api.rackspacecloud.com"></ns1:host>
+      </ns1:target>
+      <ns1:attachments>
+        <ns1:attachment xmlns:ns2="http://feeds.api.rackspacecloud.com/cadf/user-access-event" contentType="ns2:auditData" name="auditData">
+          <ns1:content>
+            <ns2:auditData>
+              <ns2:tenantId>123456</ns2:tenantId>
+              <ns2:responseMessage>OK</ns2:responseMessage>
+              <ns2:region>DFW</ns2:region>
+              <ns2:queryString></ns2:queryString>
+              <ns2:requestURL>https://lon.identity.api.rackspacecloud.com/v2.0/tokens</ns2:requestURL>
+              <ns2:methodLabel>createToken</ns2:methodLabel>
+              <ns2:roles>xxx</ns2:roles>
+              <ns2:userName>jackhandy</ns2:userName>
+              <ns2:dataCenter>DFW1</ns2:dataCenter>
+            </ns2:auditData>
+          </ns1:content>
+        </ns1:attachment>
+      </ns1:attachments>
+      <ns1:observer id="IDM-1-1" name="repose-6.1.1.1" typeURI="service/security">
+        <ns1:host address="repose"></ns1:host>
+      </ns1:observer>
+    </ns1:event>
+  </ns0:content>
+</ns0:entry>"""],
+                [
         "Valid JSON",
         """
             { "entry" : {
@@ -715,25 +821,151 @@ totally tubular title
   </ns0:author>
   <ns0:title type="text">Slice Action</ns0:title>
 </ns0:entry>"""
-                ]
-        ]
+                ],
+                [
+                        "Valid User Access Event With Multiple Attachments",
+                        """
+{
+    "entry" : {
+        "@type"   : "http://www.w3.org/2005/Atom",
+        "title"   : "Identity User Access Event",
+        "content" : {
+            "event" : {
+                "typeURI"   : "http://schemas.dmtf.org/cloud/audit/1.0/event",
+                "id"        : "6fa234aea93f38c26fa234aea93f38c2",
+                "eventType" : "activity",
+                "eventTime" : "2015-03-12T13:20:00-05:00",
+                "action"    : "create/post",
+                "outcome"   : "success",
+
+                "initiator" : {
+                    "id"      : "10.1.2.3",
+                    "typeURI" : "network/node",
+                    "name"    : "jackhandy",
+                    "host"    : {
+                        "address" : "10.1.2.3",
+                        "agent"   : "curl/7.8 (i386-redhat-linux-gnu) libcurl 7.8"
+                    }
+                },
+
+                "target" : {
+                    "id"      : "x.x.x.x",
+                    "typeURI" : "service",
+                    "name"    : "IDM",
+                    "host"    : {
+                        "address" : "lon.identity.api.rackspacecloud.com"
+                    }
+                },
+
+                "attachments" : [
+                    {
+                        "name"        : "auditData",
+                        "contentType" : "http://feeds.api.rackspacecloud.com/cadf/user-access-event/auditData",
+                        "content"     :  {
+                            "auditData" : {
+                                "region"          : "DFW",
+                                "dataCenter"      : "DFW1",
+                                "methodLabel"     : "createToken",
+                                "requestURL"      : "https://lon.identity.api.rackspacecloud.com/v2.0/tokens",
+                                "queryString"     : "",
+                                "tenantId"        : "123456",
+                                "responseMessage" : "OK",
+                                "userName"        : "jackhandy",
+                                "roles"           : "xxx"
+                            }
+                        }
+                    },
+                    {
+                        "name"        : "secondAttachmentData",
+                        "contentType" : "http://feeds.api.rackspacecloud.com/cadf/user-access-event/secondAttachmentData",
+                        "content"     :  {
+                            "secondAttachmentData" : {
+                                "key1"          : "DFW",
+                                "key2"      : "DFW1"
+                            }
+                        }
+                    }
+                ],
+
+                "observer" : {
+                    "id"      : "IDM-1-1",
+                    "name"    : "repose-6.1.1.1",
+                    "typeURI" : "service/security",
+                    "host" : {
+                        "address" : "repose"
+                    }
+                },
+
+                "reason" : {
+                    "reasonCode" : 200,
+                    "reasonType" : "http://www.iana.org/assignments/http-status-codes/http-status-codes.xml"
+                }
+            }
+        }
+    }
 }
+""",
+                        """<?xml version="1.0" ?>
+<ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:title>Identity User Access Event</ns0:title>
+  <ns0:content type="application/xml">
+    <ns1:event xmlns:ns1="http://schemas.dmtf.org/cloud/audit/1.0/event" action="create/post" eventTime="2015-03-12T13:20:00-05:00" eventType="activity" id="6fa234aea93f38c26fa234aea93f38c2" outcome="success" typeURI="http://schemas.dmtf.org/cloud/audit/1.0/event">
+      <ns1:reason reasonCode="200" reasonType="http://www.iana.org/assignments/http-status-codes/http-status-codes.xml"></ns1:reason>
+      <ns1:initiator id="10.1.2.3" name="jackhandy" typeURI="network/node">
+        <ns1:host address="10.1.2.3" agent="curl/7.8 (i386-redhat-linux-gnu) libcurl 7.8"></ns1:host>
+      </ns1:initiator>
+      <ns1:target id="x.x.x.x" name="IDM" typeURI="service">
+        <ns1:host address="lon.identity.api.rackspacecloud.com"></ns1:host>
+      </ns1:target>
+      <ns1:attachments>
+        <ns1:attachment xmlns:ns2="http://feeds.api.rackspacecloud.com/cadf/user-access-event" contentType="ns2:auditData" name="auditData">
+          <ns1:content>
+            <ns2:auditData>
+              <ns2:tenantId>123456</ns2:tenantId>
+              <ns2:responseMessage>OK</ns2:responseMessage>
+              <ns2:region>DFW</ns2:region>
+              <ns2:queryString></ns2:queryString>
+              <ns2:requestURL>https://lon.identity.api.rackspacecloud.com/v2.0/tokens</ns2:requestURL>
+              <ns2:methodLabel>createToken</ns2:methodLabel>
+              <ns2:roles>xxx</ns2:roles>
+              <ns2:userName>jackhandy</ns2:userName>
+              <ns2:dataCenter>DFW1</ns2:dataCenter>
+            </ns2:auditData>
+          </ns1:content>
+        </ns1:attachment>
+        <ns1:attachment xmlns:ns3="http://feeds.api.rackspacecloud.com/cadf/user-access-event" contentType="ns3:secondAttachmentData" name="secondAttachmentData">
+          <ns1:content>
+            <ns3:secondAttachmentData>
+              <ns3:key2>DFW1</ns3:key2>
+              <ns3:key1>DFW</ns3:key1>
+            </ns3:secondAttachmentData>
+          </ns1:content>
+        </ns1:attachment>
+      </ns1:attachments>
+      <ns1:observer id="IDM-1-1" name="repose-6.1.1.1" typeURI="service/security">
+        <ns1:host address="repose"></ns1:host>
+      </ns1:observer>
+    </ns1:event>
+  </ns0:content>
+</ns0:entry>"""]
+        ]
+    }
 
-@Unroll
-def  "json -> xml exception: #label"( String label, String json, Class clazz ) {
+    @Unroll
+    def  "json -> xml exception: #label"( String label, String json, Class clazz ) {
 
-    when:
-    JsonXmlFilter filter = new JsonXmlFilter()
+        when:
+        JsonXmlFilter filter = new JsonXmlFilter()
 
-    filter.json2Xml(IOUtils.toInputStream(json))
+        filter.json2Xml(IOUtils.toInputStream(json))
 
-    then:
-    thrown clazz
+        then:
+        thrown clazz
 
-    where:
-    [label, json, clazz] << [[
-                          "Invalid JSON",
-                          """
+        where:
+        [label, json, clazz] << [[
+                                         "Invalid JSON",
+                                         """
 {
   "entry" : {
     "@type" : "http://www.w3.org/2005/Atom",
@@ -800,7 +1032,7 @@ def  "json -> xml exception: #label"( String label, String json, Class clazz ) {
 }
 }
 }""",
-                JSONException
+                Json2Xml.JSONException
         ],
         [
                 "JSON with @type as map",
@@ -833,7 +1065,7 @@ def  "json -> xml exception: #label"( String label, String json, Class clazz ) {
 }
 }
 }""",
-                JSONException
+                Json2Xml.JSONException
         ],
         [
                 "JSON with @type as map",
@@ -870,7 +1102,7 @@ def  "json -> xml exception: #label"( String label, String json, Class clazz ) {
 }
 }
 }""",
-                JSONException
+                Json2Xml.JSONException
         ],
         [
                 "content type='application/xml' is not allowed",
@@ -910,7 +1142,7 @@ def  "json -> xml exception: #label"( String label, String json, Class clazz ) {
     }
 }
 """     ,
-        JSONException
+        Json2Xml.JSONException
         ],
             [
                     "content type='application/json' must contain json",
@@ -935,7 +1167,7 @@ def  "json -> xml exception: #label"( String label, String json, Class clazz ) {
     }
 }
 """     ,
-        JSONException
+        Json2Xml.JSONException
             ]
     ]
 }
