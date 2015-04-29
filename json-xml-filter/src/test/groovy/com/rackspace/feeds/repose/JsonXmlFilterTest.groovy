@@ -73,7 +73,8 @@ class JsonXmlFilterTest extends Specification {
                                 "tenantId"        : "123456",
                                 "responseMessage" : "OK",
                                 "userName"        : "jackhandy",
-                                "roles"           : "xxx"
+                                "roles"           : "xxx",
+                                "version"         : "1"
                             }
                         }
                     }
@@ -112,7 +113,7 @@ class JsonXmlFilterTest extends Specification {
       <ns1:attachments>
         <ns1:attachment xmlns:ns2="http://feeds.api.rackspacecloud.com/cadf/user-access-event" contentType="ns2:auditData" name="auditData">
           <ns1:content>
-            <ns2:auditData>
+            <ns2:auditData version="1">
               <ns2:tenantId>123456</ns2:tenantId>
               <ns2:responseMessage>OK</ns2:responseMessage>
               <ns2:region>DFW</ns2:region>
@@ -871,7 +872,8 @@ totally tubular title
                                 "tenantId"        : "123456",
                                 "responseMessage" : "OK",
                                 "userName"        : "jackhandy",
-                                "roles"           : "xxx"
+                                "roles"           : "xxx",
+                                "version"         : "1"
                             }
                         }
                     },
@@ -920,7 +922,7 @@ totally tubular title
       <ns1:attachments>
         <ns1:attachment xmlns:ns2="http://feeds.api.rackspacecloud.com/cadf/user-access-event" contentType="ns2:auditData" name="auditData">
           <ns1:content>
-            <ns2:auditData>
+            <ns2:auditData version="1">
               <ns2:tenantId>123456</ns2:tenantId>
               <ns2:responseMessage>OK</ns2:responseMessage>
               <ns2:region>DFW</ns2:region>

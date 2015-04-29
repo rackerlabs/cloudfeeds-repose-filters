@@ -55,6 +55,7 @@ public class Json2Xml {
     static final String ATTACHMENTS = "attachments";
     static final String CONTENT_TYPE_CADF = "contentType";
     static final String CONTENT = "content";
+    static final String VERSION = "version";
 
     static {
 
@@ -340,7 +341,12 @@ public class Json2Xml {
 
             Object childValue = map.get( child );
 
-            if( isCollection( childValue ) ||
+            if( nsMap.isInCadfAttachCustom()
+                    && child.equals( VERSION )) {
+
+                xmlWriter.writeAttribute( child, (String)map.get( child ) );
+            }
+            else if( isCollection( childValue ) ||
                     child.equals( TEXT ) ||
                     nsMap.isInCadfAttachCustom() ) {
 
@@ -431,7 +437,7 @@ public class Json2Xml {
         if ( key.equals( nsMap.getCadfAttachCustomNode()) && isCadf( prefix, nsMap ) ) {
 
             prefix = nsMap.getCadfPrefix();
-            xmlWriter.writeStartElement( prefix, key, (String) nsMap.getNsPrefix().inverseBidiMap().get( nsMap.cadfPrefix ) );
+            xmlWriter.writeStartElement( prefix, key, (String) nsMap.getNsPrefix().inverseBidiMap().get( nsMap.getCadfPrefix() ) );
         }
         else if( ons == null ) {
 
@@ -471,7 +477,7 @@ public class Json2Xml {
      * @return
      */
     private boolean isCadfAttachCustom( String key, NameSpaceMaps nsMap, String prefix ) {
-        return key.equals( nsMap.cadfAttachCustomNode ) &&
+        return key.equals( nsMap.getCadfAttachCustomNode() ) &&
           isCadf( prefix, nsMap );
     }
 
