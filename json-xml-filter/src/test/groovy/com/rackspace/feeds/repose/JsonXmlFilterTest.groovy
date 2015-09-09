@@ -7,7 +7,6 @@ import spock.lang.Unroll
 
 class JsonXmlFilterTest extends Specification {
 
-    static final int LABEL = 0
     static final int JSON = 1;
     static final int XML = 2;
 
@@ -20,7 +19,7 @@ class JsonXmlFilterTest extends Specification {
         println(xml)
 
         then:
-        assert expected == xml
+        assert xml == expected
 
         where:
         [label, json, expected] << [
@@ -103,33 +102,33 @@ class JsonXmlFilterTest extends Specification {
   <ns0:title>Identity User Access Event</ns0:title>
   <ns0:content type="application/xml">
     <ns1:event xmlns:ns1="http://schemas.dmtf.org/cloud/audit/1.0/event" action="create/post" eventTime="2015-03-12T13:20:00-05:00" eventType="activity" id="6fa234aea93f38c26fa234aea93f38c2" outcome="success" typeURI="http://schemas.dmtf.org/cloud/audit/1.0/event">
+      <ns1:observer id="IDM-1-1" name="repose-6.1.1.1" typeURI="service/security">
+        <ns1:host address="repose"></ns1:host>
+      </ns1:observer>
       <ns1:reason reasonCode="200" reasonType="http://www.iana.org/assignments/http-status-codes/http-status-codes.xml"></ns1:reason>
+      <ns1:attachments>
+        <ns1:attachment xmlns:ns2="http://feeds.api.rackspacecloud.com/cadf/user-access-event" contentType="ns2:auditData" name="auditData">
+          <ns1:content>
+            <ns2:auditData version="1">
+              <ns2:dataCenter>DFW1</ns2:dataCenter>
+              <ns2:requestURL>https://lon.identity.api.rackspacecloud.com/v2.0/tokens</ns2:requestURL>
+              <ns2:roles>xxx</ns2:roles>
+              <ns2:methodLabel>createToken</ns2:methodLabel>
+              <ns2:tenantId>123456</ns2:tenantId>
+              <ns2:queryString></ns2:queryString>
+              <ns2:region>DFW</ns2:region>
+              <ns2:responseMessage>OK</ns2:responseMessage>
+              <ns2:userName>jackhandy</ns2:userName>
+            </ns2:auditData>
+          </ns1:content>
+        </ns1:attachment>
+      </ns1:attachments>
       <ns1:initiator id="10.1.2.3" name="jackhandy" typeURI="network/node">
         <ns1:host address="10.1.2.3" agent="curl/7.8 (i386-redhat-linux-gnu) libcurl 7.8"></ns1:host>
       </ns1:initiator>
       <ns1:target id="x.x.x.x" name="IDM" typeURI="service">
         <ns1:host address="lon.identity.api.rackspacecloud.com"></ns1:host>
       </ns1:target>
-      <ns1:attachments>
-        <ns1:attachment xmlns:ns2="http://feeds.api.rackspacecloud.com/cadf/user-access-event" contentType="ns2:auditData" name="auditData">
-          <ns1:content>
-            <ns2:auditData version="1">
-              <ns2:tenantId>123456</ns2:tenantId>
-              <ns2:responseMessage>OK</ns2:responseMessage>
-              <ns2:region>DFW</ns2:region>
-              <ns2:queryString></ns2:queryString>
-              <ns2:requestURL>https://lon.identity.api.rackspacecloud.com/v2.0/tokens</ns2:requestURL>
-              <ns2:methodLabel>createToken</ns2:methodLabel>
-              <ns2:roles>xxx</ns2:roles>
-              <ns2:userName>jackhandy</ns2:userName>
-              <ns2:dataCenter>DFW1</ns2:dataCenter>
-            </ns2:auditData>
-          </ns1:content>
-        </ns1:attachment>
-      </ns1:attachments>
-      <ns1:observer id="IDM-1-1" name="repose-6.1.1.1" typeURI="service/security">
-        <ns1:host address="repose"></ns1:host>
-      </ns1:observer>
     </ns1:event>
   </ns0:content>
 </ns0:entry>"""],
@@ -177,6 +176,7 @@ class JsonXmlFilterTest extends Specification {
             """,
         """<?xml version="1.0" ?>
 <ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:title type="text">totally tubular title</ns0:title>
   <ns0:content type="application/xml">
     <ns1:event xmlns:ns1="http://docs.rackspace.com/core/event" dataCenter="DFW1" eventTime="2013-03-15T11:51:11Z" id="8d89673c-c989-11e1-895a-0b3d632a8a8" region="DFW" type="INFO" version="1">
       <ns2:product xmlns:ns2="http://docs.rackspace.com/event/emailapps_msservice" key="(domain=5002_domain_2.com)|(service=5002_domain_2.com)" operation="UPDATE" productType="lync" request="HTTP GET" response="200" serviceCode="EmailAppsMSService" status="COMPLETED" version="1">
@@ -185,7 +185,6 @@ class JsonXmlFilterTest extends Specification {
       </ns2:product>
     </ns1:event>
   </ns0:content>
-  <ns0:title type="text">totally tubular title</ns0:title>
 </ns0:entry>"""],
                 [
                         "Valid JSON with categories and links",
@@ -255,6 +254,12 @@ class JsonXmlFilterTest extends Specification {
 """,
                         """<?xml version="1.0" ?>
 <ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:link href="https://myhost/detail.html" rel="detail"/>
+  <ns0:link href="https://myhost/contact.html" rel="contact"/>
+  <ns0:category term="DFW1"/>
+  <ns0:category term="tid:1234"/>
+  <ns0:category term="some.random.category"/>
+  <ns0:title type="text">totally tubular title</ns0:title>
   <ns0:content type="application/xml">
     <ns1:event xmlns:ns1="http://docs.rackspace.com/core/event" dataCenter="DFW1" endTime="2012-06-15T10:19:52Z" id="8d89673c-c989-11e1-895a-0b3d632a8a89" region="DFW" resourceId="3863d42a-ec9a-11e1-8e12-df8baa3ca440" startTime="2012-06-14T10:19:52Z" tenantId="1234" type="USAGE" version="1">
       <ns2:product xmlns:ns2="http://docs.rackspace.com/event/emailapps_msservice" key="(domain=5002_domain_2.com)|(service=5002_domain_2.com)" operation="UPDATE" productType="lync" request="HTTP GET" response="200" serviceCode="EmailAppsMSService" status="COMPLETED" version="1">
@@ -263,12 +268,6 @@ class JsonXmlFilterTest extends Specification {
       </ns2:product>
     </ns1:event>
   </ns0:content>
-  <ns0:title type="text">totally tubular title</ns0:title>
-  <ns0:category term="DFW1"/>
-  <ns0:category term="tid:1234"/>
-  <ns0:category term="some.random.category"/>
-  <ns0:link href="https://myhost/detail.html" rel="detail"/>
-  <ns0:link href="https://myhost/contact.html" rel="contact"/>
 </ns0:entry>"""
                 ],
                 [       "Mixed Content (JSON inside XML)",
@@ -340,8 +339,8 @@ class JsonXmlFilterTest extends Specification {
   <ns0:id>urn:uuid:1f1b37e2-503b-4f32-bc8b-6d1d054efc21</ns0:id>
   <ns0:published>2014-10-29T16:24:02.856Z</ns0:published>
   <ns0:updated>2014-10-29T16:24:02.856Z</ns0:updated>
-  <ns0:content type="application/json">{"datacenter":"IAD3","raxData":{"osName.WINDOWS_2012_R2_STD_X64":{"attributes":{"Dedicated vCloud Director OS Type":"WINDOWS"},"category":"osName","name":"WINDOWS_2012_R2_STD_X64","type":"DeviceConfig"},"platform.DVC_WINDOWS_UNSUPPORTED":{"attributes":{},"category":"platform","name":"DVC_WINDOWS_UNSUPPORTED","type":"DeviceConfig"}},"source":"qe.virtops.rackspacecloud.com","tenant":"hybrid:2848639","timestamp":"2014-10-29T16:23:13.431+0000","type":"virtops.vm.create","vmProperties":{"computerName":"WindowsServ-001","containerOS":"Microsoft Windows Server 2012 (64-bit)","cpuInfo":{"coresPerSocket":1,"cpuCount":4},"hypervisor":"581846","memoryMb":"4096","networks":[{"ipAddress":"192.168.100.5","isPrimary":"true","name":"ExNet-Inside-VLAN1470","vlan":"1470"}],"organization":"urn:vcloud:org:0bc35ece-34d8-45bc-a61e-9e223e022165","vcdName":"vcd02-2848639.mv.rackspace.com","vcdUrn":"urn:vcloud:vm:fc51f8a1-11c5-4f78-89bf-611af92d8b83","vcenterUuid":"4219fe9a-fc2d-cd52-d55d-4d6842c4beb2","vmName":"WindowsServer_2012_R2_Standard_vcloud_core"}}</ns0:content>
   <ns0:title type="text">Dedicated vCloud event</ns0:title>
+  <ns0:content type="application/json">{"datacenter":"IAD3","raxData":{"osName.WINDOWS_2012_R2_STD_X64":{"attributes":{"Dedicated vCloud Director OS Type":"WINDOWS"},"category":"osName","name":"WINDOWS_2012_R2_STD_X64","type":"DeviceConfig"},"platform.DVC_WINDOWS_UNSUPPORTED":{"attributes":{},"category":"platform","name":"DVC_WINDOWS_UNSUPPORTED","type":"DeviceConfig"}},"source":"qe.virtops.rackspacecloud.com","tenant":"hybrid:2848639","timestamp":"2014-10-29T16:23:13.431+0000","type":"virtops.vm.create","vmProperties":{"computerName":"WindowsServ-001","containerOS":"Microsoft Windows Server 2012 (64-bit)","cpuInfo":{"coresPerSocket":1,"cpuCount":4},"hypervisor":"581846","memoryMb":"4096","networks":[{"ipAddress":"192.168.100.5","isPrimary":"true","name":"ExNet-Inside-VLAN1470","vlan":"1470"}],"organization":"urn:vcloud:org:0bc35ece-34d8-45bc-a61e-9e223e022165","vcdName":"vcd02-2848639.mv.rackspace.com","vcdUrn":"urn:vcloud:vm:fc51f8a1-11c5-4f78-89bf-611af92d8b83","vcenterUuid":"4219fe9a-fc2d-cd52-d55d-4d6842c4beb2","vmName":"WindowsServer_2012_R2_Standard_vcloud_core"}}</ns0:content>
 </ns0:entry>"""
                 ],
                 [
@@ -405,17 +404,17 @@ class JsonXmlFilterTest extends Specification {
   <ns0:published>2003-12-13T08:29:29-04:00</ns0:published>
   <ns0:updated>2005-07-31T12:29:29Z</ns0:updated>
   <ns0:summary type="html">Summary: &lt;b&gt;HAVE A GREAT DAY!&lt;/b&gt;</ns0:summary>
-  <ns0:content type="html">&lt;p&gt;&lt;i&gt;[Update: The Atom draft is finished.]&lt;/i&gt;&lt;/p&gt;</ns0:content>
   <ns0:author>
     <ns0:name>Joe Racker</ns0:name>
     <ns0:uri>http://docs.rackspace.com/</ns0:uri>
   </ns0:author>
-  <ns0:title type="html">Less: &lt;b&gt; &lt; &lt;/b&gt;</ns0:title>
+  <ns0:link href="http://example.org/2005/04/02/atom" rel="alternate"/>
+  <ns0:link href="http://example.org/audio/ph34r_my_podcast.mp3" rel="enclosure"/>
   <ns0:category label="region" scheme="http://docs.rackspace.com" term="rgn:DFW"/>
   <ns0:category label="datacenter" scheme="http://docs.rackspace.com" term="dc:DFW1"/>
   <ns0:category label="tenantId" scheme="http://docs.rackspace.com" term="tid:123456"/>
-  <ns0:link href="http://example.org/2005/04/02/atom" rel="alternate"/>
-  <ns0:link href="http://example.org/audio/ph34r_my_podcast.mp3" rel="enclosure"/>
+  <ns0:title type="html">Less: &lt;b&gt; &lt; &lt;/b&gt;</ns0:title>
+  <ns0:content type="html">&lt;p&gt;&lt;i&gt;[Update: The Atom draft is finished.]&lt;/i&gt;&lt;/p&gt;</ns0:content>
 </ns0:entry>"""
                 ],
                 [
@@ -466,6 +465,7 @@ class JsonXmlFilterTest extends Specification {
 """,
     """<?xml version="1.0" ?>
 <ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:title type="text">totally tubular title</ns0:title>
   <ns0:content type="application/xml">
     <ns1:event xmlns:ns1="http://docs.rackspace.com/core/event" dataCenter="DFW1" endTime="2012-06-15T10:19:52Z" id="8d89673c-c989-11e1-895a-0b3d632a8a89" region="DFW" resourceId="3863d42a-ec9a-11e1-8e12-df8baa3ca440" startTime="2012-06-14T10:19:52Z" tenantId="1234" type="USAGE" version="1">
       <ns2:product xmlns:ns2="http://docs.rackspace.com/event/emailapps_msservice" key="(domain=5002_domain_2.com)|(service=5002_domain_2.com)" operation="UPDATE" productType="lync" request="HTTP GET" response="200" serviceCode="EmailAppsMSService" status="COMPLETED" version="1">
@@ -474,7 +474,6 @@ class JsonXmlFilterTest extends Specification {
       </ns2:product>
     </ns1:event>
   </ns0:content>
-  <ns0:title type="text">totally tubular title</ns0:title>
 </ns0:entry>"""
                 ],
                 [
@@ -507,6 +506,7 @@ class JsonXmlFilterTest extends Specification {
 }""",
                         """<?xml version="1.0" ?>
 <ns0:entry xmlns:ns0="1">
+  <ns0:title type="text">totally tubular title</ns0:title>
   <ns0:content>
     <ns1:event xmlns:ns1="2" version="1">
       <ns2:product xmlns:ns2="3">
@@ -515,7 +515,6 @@ class JsonXmlFilterTest extends Specification {
       </ns2:product>
     </ns1:event>
   </ns0:content>
-  <ns0:title type="text">totally tubular title</ns0:title>
 </ns0:entry>"""
                 ],
                 [
@@ -545,6 +544,7 @@ class JsonXmlFilterTest extends Specification {
 }""",
                 """<?xml version="1.0" ?>
 <entry>
+  <title type="text">totally tubular title</title>
   <content>
     <event version="1">
       <product>
@@ -553,7 +553,6 @@ class JsonXmlFilterTest extends Specification {
       </product>
     </event>
   </content>
-  <title type="text">totally tubular title</title>
 </entry>"""],
                 [
                         "JSON with array of arrays in entry",
@@ -585,6 +584,7 @@ class JsonXmlFilterTest extends Specification {
 }
 ""","""<?xml version="1.0" ?>
 <ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:title type="text">totally tubular title</ns0:title>
   <ns0:content type="application/xml">
     <ns1:event xmlns:ns1="http://docs.rackspace.com/core/event"></ns1:event>
     <ns2:event xmlns:ns2="http://docs.rackspace.com/core/event"></ns2:event>
@@ -593,7 +593,6 @@ class JsonXmlFilterTest extends Specification {
     <ns3:event xmlns:ns3="http://docs.rackspace.com/core/event"></ns3:event>
     <ns4:event xmlns:ns4="http://docs.rackspace.com/core/event"></ns4:event>
   </ns0:content>
-  <ns0:title type="text">totally tubular title</ns0:title>
 </ns0:entry>"""
                 ],
                 [
@@ -643,6 +642,9 @@ class JsonXmlFilterTest extends Specification {
 """,
                         """<?xml version="1.0" ?>
 <ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:title type="text">
+totally tubular title
+</ns0:title>
   <ns0:content type="application/xml">
     <ns1:event xmlns:ns1="http://docs.rackspace.com/core/event" dataCenter="DFW1" endTime="2012-06-15T10:19:52Z" id="8d89673c-c989-11e1-895a-0b3d632a8a89" region="DFW" resourceId="3863d42a-ec9a-11e1-8e12-df8baa3ca440" startTime="2012-06-14T10:19:52Z" tenantId="1234" type="USAGE" version="1">
       <ns2:product xmlns:ns2="http://docs.rackspace.com/event/emailapps_msservice" key="(domain=5002_domain_2.com)|(service=5002_domain_2.com)" operation="UPDATE" productType="lync" request="HTTP GET" response="200" serviceCode="EmailAppsMSService" status="COMPLETED" version="1">
@@ -651,9 +653,6 @@ class JsonXmlFilterTest extends Specification {
       </ns2:product>
     </ns1:event>
   </ns0:content>
-  <ns0:title type="text">
-totally tubular title
-</ns0:title>
 </ns0:entry>"""
                 ],
                 ["Extra node in atom envelope",
@@ -701,6 +700,7 @@ totally tubular title
                  """<?xml version="1.0" ?>
 <ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
   <ns0:extended>extended content</ns0:extended>
+  <ns0:title type="text">totally tubular title</ns0:title>
   <ns0:content type="application/xml">
     <ns1:event xmlns:ns1="http://docs.rackspace.com/core/event" dataCenter="DFW1" eventTime="2013-03-15T11:51:11Z" id="8d89673c-c989-11e1-895a-0b3d632a8a89" region="DFW" type="INFO" version="1">
       <ns2:product xmlns:ns2="http://docs.rackspace.com/event/emailapps_msservice" key="(domain=5002_domain_2.com)|(service=5002_domain_2.com)" operation="UPDATE" productType="lync" request="HTTP GET" response="200" serviceCode="EmailAppsMSService" status="COMPLETED" version="1">
@@ -709,7 +709,6 @@ totally tubular title
       </ns2:product>
     </ns1:event>
   </ns0:content>
-  <ns0:title type="text">totally tubular title</ns0:title>
 </ns0:entry>"""
      ],
                 [
@@ -767,6 +766,7 @@ totally tubular title
 }""",
                         """<?xml version="1.0" ?>
 <ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom">
+  <ns0:title type="text">totally tubular title</ns0:title>
   <ns0:content type="application/xml">
     <ns1:event xmlns:ns1="http://docs.rackspace.com/core/event" version="1">
       <ns2:product xmlns:ns2="http://docs.rackspace.com/event/emailapps_msservice" response="200">
@@ -775,7 +775,6 @@ totally tubular title
       </ns2:product>
     </ns1:event>
   </ns0:content>
-  <ns0:title type="text">totally tubular title</ns0:title>
 </ns0:entry>
 <ns3:entry xmlns:ns3="http://www.w3.org/2005/Atom">
   <ns3:content type="application/xml">
@@ -816,11 +815,11 @@ totally tubular title
   <ns0:id>urn:uuid:175317ad-46cd-0902-abb5-8d050219b315</ns0:id>
   <ns0:published>2014-09-26T23:58:26.939Z</ns0:published>
   <ns0:updated>2014-09-26T23:58:26.939Z</ns0:updated>
-  <ns0:content type="text">some random text inside the atom content element. should not happen with real product event, but we should not fail</ns0:content>
   <ns0:author>
     <ns0:name>Atom Hopper Team</ns0:name>
   </ns0:author>
   <ns0:title type="text">Slice Action</ns0:title>
+  <ns0:content type="text">some random text inside the atom content element. should not happen with real product event, but we should not fail</ns0:content>
 </ns0:entry>"""
                 ],
                 [
@@ -912,41 +911,41 @@ totally tubular title
   <ns0:title>Identity User Access Event</ns0:title>
   <ns0:content type="application/xml">
     <ns1:event xmlns:ns1="http://schemas.dmtf.org/cloud/audit/1.0/event" action="create/post" eventTime="2015-03-12T13:20:00-05:00" eventType="activity" id="6fa234aea93f38c26fa234aea93f38c2" outcome="success" typeURI="http://schemas.dmtf.org/cloud/audit/1.0/event">
+      <ns1:observer id="IDM-1-1" name="repose-6.1.1.1" typeURI="service/security">
+        <ns1:host address="repose"></ns1:host>
+      </ns1:observer>
       <ns1:reason reasonCode="200" reasonType="http://www.iana.org/assignments/http-status-codes/http-status-codes.xml"></ns1:reason>
-      <ns1:initiator id="10.1.2.3" name="jackhandy" typeURI="network/node">
-        <ns1:host address="10.1.2.3" agent="curl/7.8 (i386-redhat-linux-gnu) libcurl 7.8"></ns1:host>
-      </ns1:initiator>
-      <ns1:target id="x.x.x.x" name="IDM" typeURI="service">
-        <ns1:host address="lon.identity.api.rackspacecloud.com"></ns1:host>
-      </ns1:target>
       <ns1:attachments>
         <ns1:attachment xmlns:ns2="http://feeds.api.rackspacecloud.com/cadf/user-access-event" contentType="ns2:auditData" name="auditData">
           <ns1:content>
             <ns2:auditData version="1">
-              <ns2:tenantId>123456</ns2:tenantId>
-              <ns2:responseMessage>OK</ns2:responseMessage>
-              <ns2:region>DFW</ns2:region>
-              <ns2:queryString></ns2:queryString>
-              <ns2:requestURL>https://lon.identity.api.rackspacecloud.com/v2.0/tokens</ns2:requestURL>
-              <ns2:methodLabel>createToken</ns2:methodLabel>
-              <ns2:roles>xxx</ns2:roles>
-              <ns2:userName>jackhandy</ns2:userName>
               <ns2:dataCenter>DFW1</ns2:dataCenter>
+              <ns2:requestURL>https://lon.identity.api.rackspacecloud.com/v2.0/tokens</ns2:requestURL>
+              <ns2:roles>xxx</ns2:roles>
+              <ns2:methodLabel>createToken</ns2:methodLabel>
+              <ns2:tenantId>123456</ns2:tenantId>
+              <ns2:queryString></ns2:queryString>
+              <ns2:region>DFW</ns2:region>
+              <ns2:responseMessage>OK</ns2:responseMessage>
+              <ns2:userName>jackhandy</ns2:userName>
             </ns2:auditData>
           </ns1:content>
         </ns1:attachment>
         <ns1:attachment xmlns:ns3="http://feeds.api.rackspacecloud.com/cadf/user-access-event" contentType="ns3:secondAttachmentData" name="secondAttachmentData">
           <ns1:content>
             <ns3:secondAttachmentData>
-              <ns3:key2>DFW1</ns3:key2>
               <ns3:key1>DFW</ns3:key1>
+              <ns3:key2>DFW1</ns3:key2>
             </ns3:secondAttachmentData>
           </ns1:content>
         </ns1:attachment>
       </ns1:attachments>
-      <ns1:observer id="IDM-1-1" name="repose-6.1.1.1" typeURI="service/security">
-        <ns1:host address="repose"></ns1:host>
-      </ns1:observer>
+      <ns1:initiator id="10.1.2.3" name="jackhandy" typeURI="network/node">
+        <ns1:host address="10.1.2.3" agent="curl/7.8 (i386-redhat-linux-gnu) libcurl 7.8"></ns1:host>
+      </ns1:initiator>
+      <ns1:target id="x.x.x.x" name="IDM" typeURI="service">
+        <ns1:host address="lon.identity.api.rackspacecloud.com"></ns1:host>
+      </ns1:target>
     </ns1:event>
   </ns0:content>
 </ns0:entry>"""]

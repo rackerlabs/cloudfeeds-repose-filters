@@ -1,13 +1,21 @@
 # Custom Repose filters for Cloud Feeds
-This component provides custom Repose filters which provide functionality 
+This component contains custom Repose filters which provide functionality 
 required by Cloud Feeds in addition to the standard Repose filters.
 
-## tenant-feed
-This filter is should only be run on a tenanted-entriy URI  `/.+/events/[^/?]+/entries/.+`
+## json-xml-filter
+This filter is in the chain if the POST request contains request body in JSON
+(content-type is vnd.rackspace.atom+json). 
 
-This filter ensures that the tenant id in the URL matches the tenant id of the provided
-token as well as the `tid:[tenantid]` category attached the requested entry.
+This filter reads the JSON Atom request body and produces an XML equivalent.
 
-If the `tid:[tenantid]` does not match the URI & token, a 404 is returned.
+# How to build
+To build this component, we require:
+* JDK 1.8
+Note that JDK 1.7 will compile the code fine but the unit tests would fail.
 
+## Simple build
+```mvn clean install```
+
+## Build an RPM
+```mvn clean install -P build-rpm```
 
