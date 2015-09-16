@@ -21,13 +21,13 @@ import java.util.*;
  *   <li> The @type key signifies the XML namespace of the xml node.  For event nodes, in
  *        the http://schemas.dmtf.org/cloud/audit/1.0/event namespace, the namespace is read from the typeURI attribute.
  *   <li> All key-value pairs are treated as attributes, unless under the http://www.w3.org/2005/Atom namespace.
- *   <li> For nodes & attributes in the http://www.w3.org/2005/Atom namespace, all key-value pairs are treated as XML
+ *   <li> For nodes &amp; attributes in the http://www.w3.org/2005/Atom namespace, all key-value pairs are treated as XML
  *        nodes and their text values.  The one exception to this is when a map contains a @text node, then all other
  *        key-value pairs in that map are treated as attributes.  Any key-map or key-list pairs in this map are treated
  *        as XML nodes.
  *   <li> Arbitrary JSON can be submitted by setting type="application/json" in the content node and including the JSON
  *        as the value of a @text key.
- *   <li> attachments nodes in the http://schemas.dmtf.org/cloud/audit/1.0/event namespace & its children are
+ *   <li> attachments nodes in the http://schemas.dmtf.org/cloud/audit/1.0/event namespace &amp; its children are
  *        handled in a custom manner.
  * </ul>
  *
@@ -520,7 +520,7 @@ public class Json2Xml {
 
 
     /**
-     * Holds state information for the process like namespaces & CADF custom attachment info.
+     * Holds state information for the process like namespaces &amp; CADF custom attachment info.
      */
     static public class NameSpaceMaps {
 
