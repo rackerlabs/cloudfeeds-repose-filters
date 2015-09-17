@@ -4,7 +4,7 @@
 
     <groupId>com.rackspace.feeds.repose</groupId>
     <artifactId>feeds-repose-filters</artifactId>
-    <version>1.6.0</version>
+    <version>1.7.0-SNAPSHOT</version>
 
     <name>Cloud Feeds Repose Filters</name>
     <description>
@@ -28,7 +28,7 @@
 
     <scm>
         <connection>scm:git:ssh://git@github.com/rackerlabs/cloudfeeds-repose-filters.git</connection>
-      <tag>feeds-repose-filters-1.6.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <repositories>
