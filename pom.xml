@@ -12,17 +12,21 @@
     </description>
 
     <properties>
-        <groovy.version>2.2.0</groovy.version>
+        <groovy.version>2.4.12</groovy.version>
         <spock.version>0.7-groovy-2.0</spock.version>
         <gmaven.version>1.5</gmaven.version>
         <jasypt.version>1.9.0</jasypt.version>
         <repose.version>8.6.3.0</repose.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
 
     <packaging>pom</packaging>
     <modules>
         <module>feeds-filters</module>
+        <module>functional-tests</module>
         <module>json-xml-filter</module>
     </modules>
 
@@ -41,6 +45,14 @@
             <id>releases.maven.research.rackspace.com</id>
             <name>Rackspace Research Releases</name>
             <url>https://maven.research.rackspacecloud.com/content/repositories/releases</url>
+        </repository>
+        <repository>
+            <id>public.maven.research.rackspace.com</id>
+            <name>Rackspace Research</name>
+            <url>http://maven.research.rackspacecloud.com/content/groups/aggregate</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
         </repository>
     </repositories>
 
