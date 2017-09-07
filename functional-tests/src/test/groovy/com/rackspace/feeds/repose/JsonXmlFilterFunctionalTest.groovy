@@ -23,7 +23,6 @@ class JsonXmlFilterFunctionalTest extends ReposeValveTest {
 
         when:
         MessageChain mc = deproxy.makeRequest(url: reposeEndpoint, method: 'GET', headers: requestHeaders)
-        sleep(20_000)
 
         then:
         mc.handlings.size() == 1
