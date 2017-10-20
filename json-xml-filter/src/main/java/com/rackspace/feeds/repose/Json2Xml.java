@@ -36,7 +36,14 @@ public class Json2Xml {
 
     static private JsonParserFactory JSON_FACTORY;
     static private JsonSerializerFactory JSON_SERIALIZER_FACTORY;
-    static private XMLOutputFactory XML_FACTORY = XMLOutputFactory.newInstance();
+
+    static {
+        System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl");
+        JSON_FACTORY = new JsonParserFactory();
+        JSON_FACTORY.setCheckDates( false );
+        JSON_SERIALIZER_FACTORY = new JsonSerializerFactory();
+    }
+    static private XMLOutputFactory XML_FACTORY = XMLOutputFactory.newFactory();
 
     static final String TYPE = "@type";
     static final String TEXT = "@text";
@@ -56,13 +63,6 @@ public class Json2Xml {
     static final String CONTENT_TYPE_CADF = "contentType";
     static final String CONTENT = "content";
     static final String VERSION = "version";
-
-    static {
-
-        JSON_FACTORY = new JsonParserFactory();
-        JSON_FACTORY.setCheckDates( false );
-        JSON_SERIALIZER_FACTORY = new JsonSerializerFactory();
-    }
 
     private int prefixInt = 0;
 
