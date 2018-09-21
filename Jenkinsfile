@@ -3,8 +3,6 @@ node('java') {
       git 'https://github.com/rackerlabs/cloudfeeds-repose-filters.git'
       // Get the Maven tool.
       // ** NOTE: This 'M3' Maven tool must be configured
-      // **       in the global configuration.           
-      // mvnHome = tool 'M3'
    }
    stage('Builds') {
       // Run the maven build
