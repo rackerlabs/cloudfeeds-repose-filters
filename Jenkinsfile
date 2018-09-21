@@ -14,7 +14,7 @@ node('java') {
       sh "mvn clean install" 
    }
    stage('Results') {
-      archiveArtifacts artifacts: "feeds-filters*.ear"
+      archiveArtifacts artifacts: "feeds-filters/target/feeds-filters*.ear"
       slackSend channel: "@teja.cheruku", color: "#FC05DE", message: "Deployed branch"
    }
 }
