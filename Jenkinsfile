@@ -1,6 +1,5 @@
 node('java') {
-   stage('Preparation') { // for display purposes
-      // Get some code from a GitHub repository
+   stage('Preparation') { // for display purpose
       git 'https://github.com/rackerlabs/cloudfeeds-repose-filters.git'
       // Get the Maven tool.
       // ** NOTE: This 'M3' Maven tool must be configured
