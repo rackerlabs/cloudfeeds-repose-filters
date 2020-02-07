@@ -14,7 +14,7 @@
     <properties>
         <test.root.dir>${project.build.directory}</test.root.dir>
 
-        <repose.version>8.6.3.0</repose.version>
+        <repose.version>9.1.0.0</repose.version>
         <repose.home>${project.build.directory}/repose_home</repose.home>
         <repose.config.templates>${project.build.directory}/configs</repose.config.templates>
         <repose.valve.jar>valve-all.jar</repose.valve.jar>

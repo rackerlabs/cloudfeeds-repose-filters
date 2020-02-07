@@ -3,14 +3,22 @@ package com.rackspace.feeds.repose;
 import javanet.staxutils.IndentingXMLStreamWriter;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
-import org.boon.json.*;
+import org.boon.json.JsonParserFactory;
+import org.boon.json.JsonSerializerFactory;
+import org.boon.json.JsonException;
+import org.boon.json.JsonSerializer;
+import org.boon.json.JsonParserAndMapper;
+
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Conversion from JSON to XML rules:
