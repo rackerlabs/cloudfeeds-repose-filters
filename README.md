@@ -1,5 +1,4 @@
 # Custom Repose filters for Cloud Feeds
-*This project is currently in sustaining mode as deployed within Rackspace.  For more information on how to support this in sustaining mode please see https://one.rackspace.com/display/cloudfeeds/Cloud+Feeds+Sustaining+Mode+Documentation+Start+Page.*
 
 This component contains custom Repose filters which provide functionality 
 required by Cloud Feeds in addition to the standard Repose filters.
