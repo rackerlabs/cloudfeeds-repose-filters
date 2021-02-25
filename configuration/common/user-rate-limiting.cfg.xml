@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- http://wiki.openrepose.org/display/REPOSE/Rate+Limiting+Filter -->
+<rate-limiting  overLimit-429-responseCode="true" 
+    use-capture-groups="true"
+    xmlns="http://docs.openrepose.org/repose/rate-limiting/v1.0">
+    <!--
+        Defines an endpoint with a matching regex to bind GET requests for
+        returning live rate limiting information.
+    -->
+    <request-endpoint uri-regex="/limits/users/?" include-absolute-limits="false"/>
+    <!-- Limits for all other requests -->
+
+    <limit-group id="UserRole_Group" groups="cloudfeeds:observer" default="true">
+
+        <limit id="observer-user-GET" uri="^/(?!.*test).*/events.*" uri-regex="^/(?!.*test)(.*)/events.*" http-methods="GET" unit="MINUTE" value="10" />
+    </limit-group>
+
+    <limit-group id="UserIdentity_Group" groups="UserIdentity_Group cloudfeeds:service-admin cloudfeeds:service-observer cloudfeeds:cadf-publisher" default="false">
+
+        <limit id="sites-POST" uri="/sites/events.*" uri-regex="/(sites)/events.*" http-methods="POST" unit="SECOND" value="675" />
+
+        <limit id="files-POST" uri="/files/events.*" uri-regex="/(files)/events.*" http-methods="POST" unit="SECOND" value="300" />
+
+        <limit id="service-admin-user-POST" uri="^/(?!.*test|sites|files).*/events.*" uri-regex="^/(?!.*test|sites|files)(.*)/events.*" http-methods="POST" unit="SECOND" value="200" />
+
+        <limit id="service-admin-user-GET" uri="^/(?!.*test).*/events.*" uri-regex="^/(?!.*test)(.*)/events.*" http-methods="GET" unit="SECOND" value="350" />
+    </limit-group>
+</rate-limiting>
