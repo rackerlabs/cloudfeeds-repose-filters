@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<header-normalization xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://docs.openrepose.org/repose/header-normalization/v1.0"
+    xsi:schemaLocation="http://undefined/repose/header-normalization/v1.0 ../config/header-normalization-configuration.xsd">
+    <header-filters>
+        <target
+            >
+            <blacklist id="ReposeHeaders">
+                <header id="X-PP-User"/>
+                <header id="X-User-Name"/>
+                <header id="X-Catalog"/>
+            </blacklist>
+    </target>
+    </header-filters>
+</header-normalization>

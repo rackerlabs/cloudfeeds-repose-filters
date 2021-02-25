@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- http://wiki.openrepose.org/display/REPOSE/Rate+Limiting+Filter -->
+<rate-limiting  overLimit-429-responseCode="true" 
+    use-capture-groups="true"
+    xmlns="http://docs.openrepose.org/repose/rate-limiting/v1.0">
+    <!--
+        Defines an endpoint with a matching regex to bind GET requests for
+        returning live rate limiting information.
+    -->
+    <request-endpoint uri-regex="/limits/?" include-absolute-limits="false"/>
+    <!-- Limits for all other requests -->
+
+    <limit-group id="limited" groups="IP_Standard" default="true">
+
+        <limit id="ip-default-POST" uri="/.*" uri-regex="/(.*)/events.*" http-methods="POST" unit="SECOND" value="310" />
+    </limit-group>
+
+    <limit-group id="unlimited" groups="IP_Super" default="false">
+    </limit-group>
+</rate-limiting>

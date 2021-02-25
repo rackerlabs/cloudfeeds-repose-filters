@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- http://wiki.openrepose.org/display/REPOSE/Translation -->
+<translation xmlns="http://docs.rackspacecloud.com/repose/translation/v1.0"
+    xsl-engine="SaxonEE" >
+    <request-translations>
+  
+        <request-translation 
+            http-methods="" 
+            content-type="*/*" 
+            accept="application/atom+xml"
+            translated-content-type="application/atom+xml">
+            <style-sheets>
+    
+                <style id="tenantid" href="usage-schema/wadl/tenant-feed.xsl" />
+    
+            </style-sheets>
+        </request-translation>
+  
+
+    </request-translations>
+
+</translation>
