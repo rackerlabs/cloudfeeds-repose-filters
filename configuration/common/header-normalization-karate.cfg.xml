@@ -3,8 +3,7 @@
     xmlns="http://docs.openrepose.org/repose/header-normalization/v1.0"
     xsi:schemaLocation="http://undefined/repose/header-normalization/v1.0 ../config/header-normalization-configuration.xsd">
     <header-filters>
-        <target
-            >
+        <target>
             <blacklist id="ReposeHeaders">
                 <header id="X-PP-User"/>
                 <header id="X-User-Name"/>
