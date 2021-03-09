@@ -6,14 +6,14 @@ Your current direcotry should be pointing to ***cloudfeeds-repose-filters***
 $docker login https://repose-docker-local.artifacts.rackspace.net
 >Enter your credentials
 
-Passing value of the **schema_version** argument is mandatory for successful build. This defines version for *usage-schema*
-Run the following command to build an image by providing the *schema_version* value. 
+Passing value of the **schema_version** and **feeds_filters_version** argument is mandatory for successful build. This defines version for *usage-schema* and *custom filters*
+Run the following command to build an image by providing the *schema_version* and **feeds_filters_version** value. 
 ```
-$docker build --build-arg schema_version=[schema_version] -f docker/Dockerfile -t repose-valve:9.1.0.0 . 
+$docker build --build-arg schema_version=[schema_version] --build-arg feeds_filters_version=[feeds_filters_version] -f docker/Dockerfile -t repose-valve:9.1.0.2 . 
 ```
 Use the following command to run a repose-valve container on port 9090
 ```
-$docker run -itd --name [Conatiner_Name] -p 9090:9090 repose-valve:9.1.0.0
+$docker run -itd --name [Conatiner_Name] -p 9090:9090 repose-valve:9.1.0.2
 ```
 
 Test with *curl -v http://localhost:9090*
@@ -26,10 +26,10 @@ APP_VARS=/var/repose
 APP_LOGS=/var/log/repose
 ```
 
-Example of building an image with schema version 1.137.0  and running a container.
+Example of building an image with schema version 1.137.0  feeds_filters_version 1.6.0 and running a container.
 ```
-$docker build --build-arg schema_version=1.137.0 -t repose-valve:9.1.0.0 .
-$docker run -itd --name repose-valve -p 9090:9090 repose-valve:9.1.0.0
+$docker build --build-arg schema_version=1.137.0 --build-arg feeds_filters_version=1.6.0 -t repose-valve:9.1.0.2 .
+$docker run -itd --name repose-valve -p 9090:9090 repose-valve:9.1.0.2
 ```
 
 

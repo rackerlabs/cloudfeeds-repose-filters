@@ -21,7 +21,7 @@
 <!--  <filter configuration="tenantid-client-auth-n.cfg.xml" name="client-auth" uri-regex="(/.+/events/[^/?]+(/entries/[^?]+)?/?(\?.*)?|/feedscatalog\/catalog\/[^/?]+/?)" />-->      
 <!--  <filter configuration="header-translation.cfg.xml" name="header-translation" /> -->
 <!--  <filter configuration="user-rate-limiting.cfg.xml" name="rate-limiting" /> -->
-<!--  <filter name="json-xml-filter" />  -->      
+      <filter name="json-xml-filter" />
       <filter name="api-validator" />
       <filter name="herp" uri-regex=".+/events/.*" />
       <filter name="derp" />
