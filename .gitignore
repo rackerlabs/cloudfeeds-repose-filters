@@ -27,3 +27,6 @@ target
 /server/catalog.xml
 /test-suite/catalog.xml
 /ah-war/nbactions.xml
+
+#License files
+*.lic

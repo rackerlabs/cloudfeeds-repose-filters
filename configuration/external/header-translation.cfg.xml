@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<header-translation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docs.openrepose.org/repose/header-translation/v1.0 ../config/header-translation.xsd"
+    xmlns="http://docs.openrepose.org/repose/header-translation/v1.0">
+    <header original-name="x-roles" new-name="x-pp-groups" remove-original="false" />
+    <header original-name="Host" new-name="x-external-loc" remove-original="false" />
+
+</header-translation>

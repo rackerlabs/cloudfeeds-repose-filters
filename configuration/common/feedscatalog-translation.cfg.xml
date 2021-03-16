@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- http://wiki.openrepose.org/display/REPOSE/Translation -->
+<translation xmlns="http://docs.rackspacecloud.com/repose/translation/v1.0"
+    xsl-engine="SaxonEE" >
+    <request-translations>
+
+    </request-translations>
+    <response-translations>
+  
+        <response-translation 
+            content-type="application/xml" 
+            accept="*/*"
+            translated-content-type="application/xml">
+            <style-sheets>
+    
+                <style id="feedscatalog-resolve" href="feedscatalog/feedscatalog-resolve.xsl" />
+    
+            </style-sheets>
+        </response-translation>
+  
+    </response-translations>
+
+</translation>
