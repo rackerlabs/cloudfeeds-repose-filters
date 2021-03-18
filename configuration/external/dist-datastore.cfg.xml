@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- http://wiki.openrepose.org/display/REPOSE/Distributed+Datastore -->
+<distributed-datastore xmlns="http://docs.openrepose.org/repose/distributed-datastore/v1.0">
+   <allowed-hosts allow-all="false">
+      <allow host="127.0.0.1" />
+      <allow host="cloudfeeds-repose-n01.test.ord1.ci.rackspace.net" />
+      <allow host="cloudfeeds-repose-n02.test.ord1.ci.rackspace.net" />
+   </allowed-hosts>
+   <port-config>
+     <port port="9191" cluster="repose" />
+   </port-config>
+</distributed-datastore>
+

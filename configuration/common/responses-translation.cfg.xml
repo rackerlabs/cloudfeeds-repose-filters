@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- http://wiki.openrepose.org/display/REPOSE/Translation -->
+<translation xmlns="http://docs.rackspacecloud.com/repose/translation/v1.0"
+    xsl-engine="SaxonEE" >
+    <request-translations>
+
+    </request-translations>
+    <response-translations>
+  
+        <response-translation 
+            code-regex="20[01]"
+            content-type="application/atom+xml" 
+            accept="*/*"
+            translated-content-type="*/*">
+            <style-sheets>
+    
+                <style id="filterPrivateAttrs" href="usage-schema/wadl/filter_private_attrs.xsl" />
+    
+            </style-sheets>
+        </response-translation>
+  
+    </response-translations>
+
+</translation>

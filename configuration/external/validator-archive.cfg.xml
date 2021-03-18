@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validators
+    multi-role-match="true"
+    xmlns="http://docs.openrepose.org/repose/validator/v1.0">
+    <validator 
+        role="default" 
+        default="true"
+        wadl="usage-schema/archive.wadl"
+        dot-output="/var/repose/archive.dot"
+        enable-rax-roles="true"
+    >
+    </validator>
+</validators>

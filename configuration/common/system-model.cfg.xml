@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- To configure Repose see: http://wiki.openrepose.org/display/REPOSE/Configuration -->
+<system-model xmlns="http://docs.openrepose.org/repose/system-model/v2.0">
+    <nodes>
+       <!-- <node id="repose_atom-app-n01" hostname="atom-app-n01.test.ord1.ci.rackspace.net" http-port="9090"/>
+        <node id="repose_atom-app-n02" hostname="atom-app-n02.test.ord1.ci.rackspace.net" http-port="9090"/>
+        <node id="repose_atom-app-n03" hostname="atom-app-n03.test.ord1.ci.rackspace.net" http-port="9090"/>
+        <node id="repose_atom-app-n04" hostname="atom-app-n04.test.ord1.ci.rackspace.net" http-port="9090"/>
+        <node id="repose_atom-app-n05" hostname="atom-app-n05.test.ord1.ci.rackspace.net" http-port="9090"/>
+        <node id="repose_atom-app-n06" hostname="atom-app-n06.test.ord1.ci.rackspace.net" http-port="9090"/>-->
+      <node id="repose_node1" hostname="localhost" http-port="9090"/>
+    </nodes>
+    <filters>
+      <filter name="slf4j-http-logging" />
+      <filter name="uri-normalization" />
+      <filter name="header-normalization" />
+<!--  <filter name="ip-identity" /> -->  
+<!--  <filter name="rate-limiting" /> -->
+<!--  <filter configuration="rackspace-identity-basic-auth.cfg.xml" name="rackspace-identity-basic-auth" /> -->
+<!--  <filter name="client-auth" uri-regex="(/.+/events/?|/.+/events/?[?].+|/.+/events/entries.*|/feedscatalog\/catalog/?)" /> -->
+<!--  <filter configuration="tenantid-client-auth-n.cfg.xml" name="client-auth" uri-regex="(/.+/events/[^/?]+(/entries/[^?]+)?/?(\?.*)?|/feedscatalog\/catalog\/[^/?]+/?)" />-->      
+<!--  <filter configuration="header-translation.cfg.xml" name="header-translation" /> -->
+<!--  <filter configuration="user-rate-limiting.cfg.xml" name="rate-limiting" /> -->
+<!--  <filter name="json-xml-filter" />  -->      
+      <filter name="api-validator" />
+      <filter name="herp" uri-regex=".+/events/.*" />
+      <filter name="derp" />
+      <filter configuration="header-normalization-karate.cfg.xml" name="header-normalization" />
+    </filters>
+
+    <services>
+    <!--  <service name="dist-datastore" />-->
+    </services>
+    <destinations>
+      <endpoint default="true" hostname="localhost" id="atomhopper_localhost" port="8080" protocol="http" root-path="" />
+    </destinations>
+</system-model>
+
