@@ -4,12 +4,7 @@
 <distributed-datastore xmlns="http://docs.openrepose.org/repose/distributed-datastore/v1.0">
    <allowed-hosts allow-all="false">
       <allow host="127.0.0.1" />
-      <allow host="atom-app-n01.test.ord1.ci.rackspace.net" />
-      <allow host="atom-app-n02.test.ord1.ci.rackspace.net" />
-      <allow host="atom-app-n03.test.ord1.ci.rackspace.net" />
-      <allow host="atom-app-n04.test.ord1.ci.rackspace.net" />
-      <allow host="atom-app-n05.test.ord1.ci.rackspace.net" />
-      <allow host="atom-app-n06.test.ord1.ci.rackspace.net" />
+      <allow host="localhost" />
    </allowed-hosts>
    <port-config>
      <port port="9191" cluster="repose" />

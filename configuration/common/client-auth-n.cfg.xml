@@ -4,7 +4,7 @@
 
     <delegating quality="0.9"/>
     <openstack-auth  tenanted="false" group-cache-timeout="60000" connectionPoolId="client-auth-pool" token-cache-timeout="600000"  send-all-tenant-ids="true" xmlns="http://docs.openrepose.org/repose/client-auth/os-ids-auth/v1.0">
-        <identity-service username="atomhopper" password="JZHW45davGruWApx" uri="https://staging.identity-internal.api.rackspacecloud.com/v2.0" />
+        <identity-service username="xxxxxxxx" password="xxxxxxxxx" uri="https://staging.identity-internal.api.rackspacecloud.com/v2.0" />
         <ignore-tenant-roles>
               <role>identity:admin</role>
         </ignore-tenant-roles>

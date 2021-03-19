@@ -12,7 +12,8 @@
         </Flume>
         <RollingFile name="defaultFile"
             filename="/var/log/repose/repose.log"
-            filePattern="/var/log/repose/repose.log.%i">
+            filePattern="/var/log/repose/repose.log.%i"
+            filePermissions="rw-r--r--">
             <PatternLayout>
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-4r [%t] %-5p %c %x - %m%n</Pattern>
             </PatternLayout>
@@ -21,34 +22,10 @@
             </Policies>
             <DefaultRolloverStrategy max="3"/>
         </RollingFile>
-        <Syslog name="syslog" format="RFC5424"
-                host="syslog.staging.ord1.us.ci.rackspace.net"
-                port="514"
-                protocol="udp"
-                facility="local0"
-                appName="repose"
-                mdcId="mdc"
-                >
-            <LoggerFields>
-                <KeyValuePair key="thread" value="%t"/>
-                <KeyValuePair key="priority" value="%p"/>
-                <KeyValuePair key="category" value="%c"/>
-                <KeyValuePair key="level" value="%-5p"/>
-                <KeyValuePair key="ndc" value="%x"/>
-            </LoggerFields>
-        </Syslog>
-        <Syslog name="httpSyslog" format="RFC5424"
-                host="syslog.staging.ord1.us.ci.rackspace.net"
-                port="514"
-                protocol="udp"
-                facility="local1"
-                appName=""
-                mdcId="mdc"
-                >
-        </Syslog>
         <RollingFile name="httpLocal"
             filename="/var/log/repose/http_repose.log"
-            filePattern="/var/log/repose/http_repose.log.%i">
+            filePattern="/var/log/repose/http_repose.log.%i"
+            filePermissions="rw-r--r--">
             <PatternLayout>
                 <Pattern>%m%n</Pattern>
             </PatternLayout>
@@ -60,7 +37,6 @@
     </Appenders>
     <Loggers>
         <Root level="WARN">
-            <AppenderRef ref="syslog"/>
             <AppenderRef ref="defaultFile"/>
         </Root>
         <Logger name="com.sun.jersey" level="off"/>
@@ -72,7 +48,6 @@
         <Logger name="org.springframework" level="warn"/>
         <Logger name="intrafilter-logging" level="info"/>
         <Logger name="http" level="info" additivity="false">
-            <AppenderRef ref="httpSyslog"/>
             <AppenderRef ref="httpLocal"/>
         </Logger>
         <Logger name="org.openrepose.herp.pre.filter" level="warn"/>
