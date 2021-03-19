@@ -33,9 +33,9 @@ WORKDIR ${APP_ROOT}
 #Remove existing configuration
 RUN rm -r ${APP_ROOT}/*
 
-COPY ./configuration/common ./files/jmx/ ${APP_ROOT}/
-COPY ./files/saxon.sh ./files/saxon.csh /etc/profile.d/
-COPY ./files/repose-logrotate /etc/logrotate.d/repose
+COPY configuration/common configuration/files/jmx/ ${APP_ROOT}/
+COPY configuration/files/saxon.sh configuration/files/saxon.csh /etc/profile.d/
+COPY configuration/files/repose-logrotate /etc/logrotate.d/repose
 COPY ${saxon_lic} ${SAXON_HOME}/saxon-license.lic
 COPY --from=feeds_artifacts /usage-schema* ${APP_ROOT}/usage-schema
 COPY --from=feeds_artifacts feeds-filters-*.ear /usr/share/repose/filters/
