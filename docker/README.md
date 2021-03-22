@@ -6,17 +6,12 @@ Your current direcotry should be pointing to ***cloudfeeds-repose-filters/docker
 $docker login https://repose-docker-local.artifacts.rackspace.net
 >Enter your credentials
 
-Passing value of the **schema_version** and **feeds_filters_version** **saxon_lic** argument is mandatory for successful build. This defines version for *usage-schema* and *custom filters*
-Run the following command to build an image by providing the *schema_version* and **feeds_filters_version** value. 
-```
-$docker build --build-arg schema_version=[schema_version] --build-arg feeds_filters_version=[feeds_filters_version] --build-arg saxon_lic=[saxon_license_file] -f Dockerfile -t repose-valve:9.1.0.2 . 
-```
-Use the following command to run a repose-valve container on port 9090
-```
-$docker run -itd --name [Conatiner_Name] -p 9090:9090 repose-valve:9.1.0.2
-```
-
-Test with *curl -v http://localhost:9090*
+***Mandatory arguments:*** 
+**schema_version** - Schema version to be used
+**feeds_filters_version** - Custom filters version
+**saxon_lic** - saxon license file
+***Optional argument:***
+**repose_valve** - CloudFeeds Repose image type. Possible values: *common* (custom filters with common configuration), *internal* or *external*. 
 
 Following environment variables are set 
 ```
@@ -26,8 +21,19 @@ APP_VARS=/var/repose
 APP_LOGS=/var/log/repose
 ```
 
-Example of build and run a container with schema version 1.137.0 and feeds_filters_version 1.6.0 with a valid saxon license file
+Run the following command to build an image with custom filters only. 
 ```
-$docker build --build-arg schema_version=1.137.0 --build-arg feeds_filters_version=1.6.0 --build-arg saxon_lic=saxon-licese.lic -t repose-valve:9.1.0.2 -f Dockerfile .
-$docker run -itd --name repose-valve -p 9090:9090 repose-valve:9.1.0.2
+$docker build --build-arg schema_version=1.137.0 --build-arg feeds_filters_version=1.7.0 --build-arg saxon_lic=saxon-license.lic -f Dockerfile -t cloudfeeds-repose-custom:9.1.0.2 . 
 ```
+
+Run the following command to build an image with custom + external filters. 
+```
+$docker build --build-arg schema_version=1.137.0 --build-arg feeds_filters_version=1.7.0 --build-arg saxon_lic=saxon-license.lic --build-arg repose_valve=external -f Dockerfile -t cloudfeeds-repose-external:9.1.0.2 . 
+```
+
+Use the following command to run a cloudfeeds repose-valve external container on port 9090
+```
+$docker run -itd --name [Conatiner_Name] -p 9090:9090 cloudfeeds-repose-external:9.1.0.2
+```
+
+Test with *curl -v http://localhost:9090*
