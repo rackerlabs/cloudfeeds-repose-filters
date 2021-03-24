@@ -1,7 +1,7 @@
 # docker build image and run the conatiner
 **This docuemntation is in progress and subjected to change with the addition of new configuration files**
 Your current direcotry should be pointing to ***cloudfeeds-repose-filters/docker*** 
-***Copy a valid saxon license file to current directory***
+***Copy a valid saxon license file to the current directory also need VPN and Jfrog Repository access***
 >Setup Jfrog repository login for pulling Repose docker image.
 $docker login https://repose-docker-local.artifacts.rackspace.net
 >Enter your credentials
@@ -23,12 +23,12 @@ APP_LOGS=/var/log/repose
 
 Run the following command to build an image with custom filters only. 
 ```
-$docker build --build-arg schema_version=1.137.0 --build-arg feeds_filters_version=1.7.0 --build-arg saxon_lic=saxon-license.lic -f Dockerfile -t cloudfeeds-repose-custom:9.1.0.2 . 
+docker build --build-arg schema_version=1.137.0 --build-arg feeds_filters_version=1.7.0 --build-arg saxon_lic=saxon-license.lic -f Dockerfile -t cloudfeeds-repose-custom:9.1.0.2 . 
 ```
 
 Run the following command to build an image with custom + external filters. 
 ```
-$docker build --build-arg schema_version=1.137.0 --build-arg feeds_filters_version=1.7.0 --build-arg saxon_lic=saxon-license.lic --build-arg repose_valve=external -f Dockerfile -t cloudfeeds-repose-external:9.1.0.2 . 
+docker build --build-arg schema_version=1.137.0 --build-arg feeds_filters_version=1.7.0 --build-arg saxon_lic=saxon-license.lic --build-arg repose_valve=external -f Dockerfile -t cloudfeeds-repose-external:9.1.0.2 . 
 ```
 
 Use the following command to run a cloudfeeds repose-valve external container on port 9090
