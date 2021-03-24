@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- To configure Repose see: http://wiki.openrepose.org/display/REPOSE/Configuration -->
 <system-model xmlns="http://docs.openrepose.org/repose/system-model/v2.0">
-  <repose-cluster id="repose">
     <nodes>
-        <node id="repose_cloudfeeds-repose-n01" hostname="cloudfeeds-repose-n01.test.ord1.ci.rackspace.net" http-port="9090"/>
-        <node id="repose_cloudfeeds-repose-n02" hostname="cloudfeeds-repose-n02.test.ord1.ci.rackspace.net" http-port="9090"/>
+        <node id="repose_cloudfeeds-repose-n01" hostname="localhost" http-port="9090"/>
+        <!--node id="repose_cloudfeeds-repose-n02" hostname="cloudfeeds-repose-n02.test.ord1.ci.rackspace.net" http-port="9090"/-->
     </nodes>
     <filters>
       <filter name="slf4j-http-logging" />
       <filter name="uri-normalization" uri-regex="^(?!/archive/).*" />
-      <filter configuration="uri-normalization-archive.cfg.xml" name="uri-normalization" uri-regex="^/archive/.*" />
       <filter name="header-normalization" />
-      <filter name="ip-identity" />
+      <filter name="ip-user" />
       <filter name="rate-limiting" />
-      <filter name="rackspace-identity-basic-auth" />
+<!--  <filter name="rackspace-identity-basic-auth" />
       <filter name="client-auth" uri-regex="(/.+/events/?|/.+/events/?[?].+|/.+/events/entries.*|/feedscatalog\/catalog/?)" />
-      <filter configuration="tenantid-client-auth-n.cfg.xml" name="client-auth" uri-regex="(/.+/events/[^/?]+(/entries/[^?]+)?/?(\?.*)?|/feedscatalog\/catalog\/[^/?]+/?|^/archive/.*)" />
+      <filter configuration="tenantid-client-auth-n.cfg.xml" name="client-auth" uri-regex="(/.+/events/[^/?]+(/entries/[^?]+)?/?(\?.*)?|/feedscatalog\/catalog\/[^/?]+/?|^/archive/.*)" />-->
       <filter configuration="header-translation.cfg.xml" name="header-translation" />
       <filter configuration="user-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^(?!/archive/).*" />
       <filter configuration="user-archive-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^/archive/.*" />
       <filter name="json-xml-filter" uri-regex="^(?!/archive/).*" />
       <filter name="api-validator" uri-regex="^(?!/archive/).*" />
-      <filter configuration="validator-archive.cfg.xml" name="api-validator" uri-regex="^/archive/.*" />
       <filter name="uri-stripper" uri-regex="^/archive/.*" />
       <filter configuration="destination-router.cfg.xml" name="destination-router" uri-regex="^/archive/[^/?]+/[^/?]+/(iad|dfw|ord|lon|hkg|syd)_([^/?]+)_[1-9]\d{3}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])\.(xml|json)" />
       <filter name="herp" uri-regex="^(?!/archive/).+/events/.+" />
@@ -30,12 +27,11 @@
     </filters>
 
     <services>
-      <service name="dist-datastore" />
+      <!--service name="dist-datastore" /-->
     </services>
     <destinations>
-      <endpoint default="false" hostname="storage101.pprod1.clouddrive.com" id="archive" port="443" protocol="https" root-path="v1" />
-      <endpoint default="true" hostname="atomhopper.test.ord1.ci.rackspace.net" id="atom_vip" port="443" protocol="https" root-path="" />
+      <!--endpoint default="false" hostname="storage101.pprod1.clouddrive.com" id="archive" port="443" protocol="https" root-path="v1" /-->
+      <endpoint default="true" hostname="localhost" id="atom_vip" port="8080" protocol="http" root-path="" />
     </destinations>
-  </repose-cluster>
 </system-model>
 
