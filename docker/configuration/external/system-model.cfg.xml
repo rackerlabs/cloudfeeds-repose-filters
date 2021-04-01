@@ -13,14 +13,11 @@
       <filter name="rate-limiting" />
 <!--  <filter name="rackspace-identity-basic-auth" />
       <filter name="client-auth" uri-regex="(/.+/events/?|/.+/events/?[?].+|/.+/events/entries.*|/feedscatalog\/catalog/?)" />
-      <filter configuration="tenantid-client-auth-n.cfg.xml" name="client-auth" uri-regex="(/.+/events/[^/?]+(/entries/[^?]+)?/?(\?.*)?|/feedscatalog\/catalog\/[^/?]+/?|^/archive/.*)" />-->
+      <filter configuration="tenantid-client-auth-n.cfg.xml" name="client-auth" uri-regex="(/.+/events/[^/?]+(/entries/[^?]+)?/?(\?.*)?|/feedscatalog\/catalog\/[^/?]+/?)" />-->
       <filter configuration="header-translation.cfg.xml" name="header-translation" />
       <filter configuration="user-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^(?!/archive/).*" />
-      <filter configuration="user-archive-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^/archive/.*" />
       <filter name="json-xml-filter" uri-regex="^(?!/archive/).*" />
       <filter name="api-validator" uri-regex="^(?!/archive/).*" />
-      <filter name="uri-stripper" uri-regex="^/archive/.*" />
-      <filter configuration="destination-router.cfg.xml" name="destination-router" uri-regex="^/archive/[^/?]+/[^/?]+/(iad|dfw|ord|lon|hkg|syd)_([^/?]+)_[1-9]\d{3}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])\.(xml|json)" />
       <filter name="herp" uri-regex="^(?!/archive/).+/events/.+" />
       <filter name="derp" />
       <filter configuration="header-normalization-karate.cfg.xml" name="header-normalization" />

@@ -7,7 +7,6 @@
         <identity-service username="xxxxxxxxxx" password="xxxxxxxxx" uri="https://staging.identity-internal.api.rackspacecloud.com/v2.0" />
           <client-mapping id-regex="/.+/events/([^/?]+)(/entries/[^?]+)?/?(\?.*)?"/>
         <client-mapping id-regex="/feedscatalog/catalog/([^/?]+)/?"/>
-        <client-mapping id-regex="/archive/([^/?]+)/.*"/>
     </openstack-auth>
 
 
