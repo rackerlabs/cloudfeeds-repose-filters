@@ -19,6 +19,7 @@ SAXON_HOME=/etc/saxon
 APP_ROOT=/etc/repose
 APP_VARS=/var/repose
 APP_LOGS=/var/log/repose
+DESTINATION_PORT=8080
 ```
 
 Run the following command to build an image with custom filters only. 
@@ -37,3 +38,9 @@ $docker run -itd --name [Conatiner_Name] -p 9090:9090 cloudfeeds-repose-external
 ```
 
 Test with *curl -v http://localhost:9090*
+
+Envrionment varaible *DESTINATION_PORT* is configured with 8080 by default. To connect with a different destination port pass the environment variable value at runtime.
+Sample command to cofigure 8081 as destination port.
+```
+$docker run -itd --name [Conatiner_Name] -p 9090:9090 --env DESTINATION_PORT=8081 cloudfeeds-repose-external:9.1.0.2
+```

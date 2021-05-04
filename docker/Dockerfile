@@ -8,8 +8,8 @@ ARG schema_version
 #Custom Feeds Filters Version 
 ARG feeds_filters_version
 
-ENV SCHEMA_VERSION=${schema_version}
-ENV FEEDS_FILTER_VERSION=${feeds_filters_version}
+ENV SCHEMA_VERSION=${schema_version} \
+    FEEDS_FILTER_VERSION=${feeds_filters_version}
 
 RUN apk --no-cache add curl tar \
     && curl https://maven.research.rackspacecloud.com/content/repositories/releases/com/rackspace/usage/usage-schema/${SCHEMA_VERSION}/usage-schema-${SCHEMA_VERSION}-schema.tar.gz ${APP_ROOT} | tar xz \
@@ -25,6 +25,7 @@ ARG saxon_lic
 ARG repose_valve=common
 
 ENV SAXON_HOME=/etc/saxon \
+    DESTINATION_PORT=8080 \
     http_proxy= \
     APP_ROOT=/etc/repose \
     JAVA_OPTS=
@@ -47,4 +48,4 @@ RUN chmod +x /usr/share/repose/filters/feeds-filters-*.ear
 
 EXPOSE 9090 
 # Start Repose.
-CMD java $JAVA_OPTS -jar /usr/share/repose/repose.jar -c /etc/repose && tail -f /var/log/repose/repose.log
+CMD sed -i -e 's/port="8080"/port=\"'${DESTINATION_PORT}'\"/' system-model.cfg.xml && java $JAVA_OPTS -jar /usr/share/repose/repose.jar -c /etc/repose && tail -f /var/log/repose/repose.log
