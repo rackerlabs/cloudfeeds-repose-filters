@@ -11,9 +11,12 @@
       <filter name="header-normalization" />
       <filter name="ip-user" />
       <filter name="rate-limiting" />
-<!--  <filter name="rackspace-identity-basic-auth" />
-      <filter name="client-auth" uri-regex="(/.+/events/?|/.+/events/?[?].+|/.+/events/entries.*|/feedscatalog\/catalog/?)" />
-      <filter configuration="tenantid-client-auth-n.cfg.xml" name="client-auth" uri-regex="(/.+/events/[^/?]+(/entries/[^?]+)?/?(\?.*)?|/feedscatalog\/catalog\/[^/?]+/?|^/archive/.*)" />-->
+      <filter name="keystone-v2-basic-auth" />
+      <filter name="keystone-v2" />
+      <!-- TBD: TenantId validation configuration
+      <filter name="url-extractor-to-header" />
+      <filter name="keystone-v2-authorization" />
+      -->
       <filter configuration="header-translation.cfg.xml" name="header-translation" />
       <filter configuration="user-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^(?!/archive/).*" />
       <filter configuration="user-archive-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^/archive/.*" />
@@ -31,7 +34,7 @@
     </services>
     <destinations>
       <!--endpoint default="false" hostname="storage101.pprod1.clouddrive.com" id="archive" port="443" protocol="https" root-path="v1" /-->
-      <endpoint default="true" hostname="localhost" id="atom_vip" port="8080" protocol="http" root-path="" />
+      <endpoint default="true" hostname="atomhopper" id="atom_vip" port="8080" protocol="http" root-path="" />
     </destinations>
 </system-model>
 

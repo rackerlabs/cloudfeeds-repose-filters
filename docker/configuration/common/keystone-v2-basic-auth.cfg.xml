@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<keystone-v2-basic-auth
+    xmlns="http://docs.openrepose.org/repose/keystone-v2-basic-auth/v1.0"
+    keystone-v2-service-uri="https://staging.identity-internal.api.rackspacecloud.com/v2.0/tokens"
+    token-cache-timeout-millis="600000">
+    <delegating quality="1.0"/>
+</keystone-v2-basic-auth>
