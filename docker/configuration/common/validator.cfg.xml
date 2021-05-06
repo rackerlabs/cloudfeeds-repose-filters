@@ -20,7 +20,7 @@
         xsd-engine="SaxonEE"
         join-xpath-checks="true"
         check-headers="true"
-        enable-rax-roles="false"
+        enable-rax-roles="true"
     >
     </validator>
 </validators>
