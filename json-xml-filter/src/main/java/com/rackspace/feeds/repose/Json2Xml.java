@@ -3,14 +3,22 @@ package com.rackspace.feeds.repose;
 import javanet.staxutils.IndentingXMLStreamWriter;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
-import org.boon.json.*;
+import org.boon.json.JsonParserFactory;
+import org.boon.json.JsonSerializerFactory;
+import org.boon.json.JsonException;
+import org.boon.json.JsonSerializer;
+import org.boon.json.JsonParserAndMapper;
+
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Conversion from JSON to XML rules:
@@ -36,7 +44,14 @@ public class Json2Xml {
 
     static private JsonParserFactory JSON_FACTORY;
     static private JsonSerializerFactory JSON_SERIALIZER_FACTORY;
-    static private XMLOutputFactory XML_FACTORY = XMLOutputFactory.newInstance();
+
+    static {
+        System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl");
+        JSON_FACTORY = new JsonParserFactory();
+        JSON_FACTORY.setCheckDates( false );
+        JSON_SERIALIZER_FACTORY = new JsonSerializerFactory();
+    }
+    static private XMLOutputFactory XML_FACTORY = XMLOutputFactory.newFactory();
 
     static final String TYPE = "@type";
     static final String TEXT = "@text";
@@ -56,13 +71,6 @@ public class Json2Xml {
     static final String CONTENT_TYPE_CADF = "contentType";
     static final String CONTENT = "content";
     static final String VERSION = "version";
-
-    static {
-
-        JSON_FACTORY = new JsonParserFactory();
-        JSON_FACTORY.setCheckDates( false );
-        JSON_SERIALIZER_FACTORY = new JsonSerializerFactory();
-    }
 
     private int prefixInt = 0;
 

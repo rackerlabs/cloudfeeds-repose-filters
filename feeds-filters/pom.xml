@@ -7,9 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.rackspace.feeds.repose</groupId>
     <artifactId>feeds-filters</artifactId>
-
     <name>feeds-filters</name>
     <description>Custom Cloud Feeds Repose filters</description>
 

@@ -1,10 +1,11 @@
 package com.rackspace.feeds.repose;
 
-import org.openrepose.commons.utils.io.BufferedServletInputStream;
-import org.openrepose.commons.utils.servlet.http.MutableHttpServletRequest;
-import org.openrepose.commons.utils.servlet.http.MutableHttpServletResponse;
 import org.apache.commons.io.IOUtils;
-import org.boon.json.*;
+import org.boon.json.JsonException;
+import org.openrepose.commons.utils.io.BufferedServletInputStream;
+import org.openrepose.commons.utils.servlet.http.HttpServletRequestWrapper;
+import org.openrepose.commons.utils.servlet.http.HttpServletResponseWrapper;
+import org.openrepose.commons.utils.servlet.http.ResponseMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLStreamException;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -38,13 +38,11 @@ public class JsonXmlFilter implements Filter {
     static final String ERROR_PREFACE = "The following error was encountered after the JSON body was converted to XML: ";
     static final String JSON_ERROR_PREFACE = "Unable to parse invalid JSON: ";
 
-    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
         LOG.debug( "initialize" );
     }
 
-    @Override
     public void doFilter( ServletRequest servletRequest,
                           ServletResponse servletResponse, FilterChain filterChain ) throws IOException, ServletException {
 
@@ -57,11 +55,8 @@ public class JsonXmlFilter implements Filter {
 
             LOG.debug( "Processing request with Content-type: " + type + "; method: " + method );
 
-            MutableHttpServletResponse mutableResponse =
-                    MutableHttpServletResponse.wrap( (HttpServletRequest) servletRequest,
-                            (HttpServletResponse) servletResponse );
+            HttpServletResponseWrapper mutableResponse = new HttpServletResponseWrapper((HttpServletResponse) servletResponse, ResponseMode.PASSTHROUGH, ResponseMode.PASSTHROUGH);
 
-            MutableHttpServletRequest mutableRequest = MutableHttpServletRequest.wrap( (HttpServletRequest) servletRequest );
 
             try {
 
@@ -72,7 +67,7 @@ public class JsonXmlFilter implements Filter {
 
                 // repose-specific stuff
                 BufferedServletInputStream istream = new BufferedServletInputStream( IOUtils.toInputStream( xmlOutput ) );
-                mutableRequest.setInputStream( istream );
+                HttpServletRequestWrapper mutableRequest = new HttpServletRequestWrapper((HttpServletRequest) servletRequest, istream);
                 mutableRequest.replaceHeader( CONTENT_TYPE, ATOM_TYPE );
 
                 filterChain.doFilter( mutableRequest, mutableResponse );
@@ -80,7 +75,7 @@ public class JsonXmlFilter implements Filter {
                 if ( mutableResponse.getStatus() == 400 ) {
 
                     mutableResponse.sendError( mutableResponse.getStatus(),
-                            jsonEscape( ERROR_PREFACE + mutableResponse.getMessage() ) );
+                            jsonEscape( ERROR_PREFACE + mutableResponse.getReason() ) );
                 }
             } catch ( Json2Xml.JSONException e ) {
 
@@ -119,7 +114,6 @@ public class JsonXmlFilter implements Filter {
         return type != null && type.equals(RAX_ATOM_JSON) && method.equals( POST );
     }
 
-    @Override
     public void destroy() {
 
     }

@@ -7,7 +7,6 @@
         <version>1.7.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.rackspace.feeds.repose</groupId>
     <artifactId>json-xml-filter</artifactId>
 
     <name>Cloud Feeds JSON to XML Filter</name>
@@ -52,7 +51,7 @@
 
         <dependency>
             <groupId>org.openrepose</groupId>
-            <artifactId>utilities</artifactId>
+            <artifactId>commons-utilities</artifactId>
             <scope>provided</scope>
         </dependency>
 
