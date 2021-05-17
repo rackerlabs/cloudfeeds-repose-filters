@@ -16,6 +16,6 @@
             <group>60000</group>
         </timeouts>
     </cache>
-    <!--tenant-handling send-all-tenant-ids="true" /--> 
+    <tenant-handling send-all-tenant-ids="true" /> 
 </keystone-v2>
 

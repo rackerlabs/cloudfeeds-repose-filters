@@ -13,10 +13,8 @@
       <filter name="rate-limiting" />
       <filter name="keystone-v2-basic-auth" />
       <filter name="keystone-v2" />
-      <!-- TBD: TenantId validation configuration
       <filter name="url-extractor-to-header" />
       <filter name="keystone-v2-authorization" />
-      -->
       <filter configuration="header-translation.cfg.xml" name="header-translation" />
       <filter configuration="user-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^(?!/archive/).*" />
       <filter name="json-xml-filter" uri-regex="^(?!/archive/).*" />
