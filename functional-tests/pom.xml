@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.rackspace.feeds.repose</groupId>
+        <artifactId>feeds-repose-filters</artifactId>
+        <version>1.7.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>functional-tests</artifactId>
+    <name>Cloud Feeds Repose Filters Functional Tests</name>
+    <description>Functional Tests for custom Cloud Feeds Repose filters</description>
+
+    <properties>
+        <test.root.dir>${project.build.directory}</test.root.dir>
+
+        <repose.version>8.6.3.0</repose.version>
+        <repose.home>${project.build.directory}/repose_home</repose.home>
+        <repose.config.templates>${project.build.directory}/configs</repose.config.templates>
+        <repose.valve.jar>valve-all.jar</repose.valve.jar>
+        <repose.valve.jar.location>${repose.home}/${repose.valve.jar}</repose.valve.jar.location>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.rackspace.feeds.repose</groupId>
+            <artifactId>feeds-filters</artifactId>
+            <version>${project.version}</version>
+            <type>ear</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openrepose</groupId>
+            <artifactId>functional-test-framework</artifactId>
+            <version>${repose.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.rackspace</groupId>
+            <artifactId>deproxy</artifactId>
+            <version>0.21</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.rackspace</groupId>
+                    <artifactId>gdeproxy</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/configs</directory>
+                <filtering>false</filtering>
+                <targetPath>${repose.config.templates}</targetPath>
+            </testResource>
+
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}/test-classes</targetPath>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-repose-valve-runnable</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.openrepose</groupId>
+                                    <artifactId>valve</artifactId>
+                                    <version>${repose.version}</version>
+                                    <classifier>all</classifier>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${repose.home}</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy-repose-filter-bundle</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.openrepose</groupId>
+                                    <artifactId>filter-bundle</artifactId>
+                                    <version>${repose.version}</version>
+                                    <type>ear</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.rackspace.feeds.repose</groupId>
+                                    <artifactId>feeds-filters</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>ear</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${repose.home}/artifacts</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>${gmaven.version}</version>
+                <configuration>
+                    <source />
+                    <providerSelection>1.8</providerSelection>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.gmaven.runtime</groupId>
+                        <artifactId>gmaven-runtime-2.0</artifactId>
+                        <version>${gmaven.version}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.codehaus.groovy</groupId>
+                                <artifactId>groovy-all</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>${groovy.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>buildGroovies</id>
+                        <goals>
+                            <goal>generateStubs</goal>
+                            <goal>compile</goal>
+                            <goal>generateTestStubs</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase />
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.16</version>
+                <executions>
+                    <execution>
+                        <id>functional-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>**/*Test.*</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
