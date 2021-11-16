@@ -24,12 +24,12 @@ DESTINATION_PORT=8080
 
 Run the following command to build an image with custom filters only. 
 ```
-docker build --build-arg schema_version=1.137.0 --build-arg feeds_filters_version=1.7.0 --build-arg saxon_lic=saxon-license.lic -f Dockerfile -t cloudfeeds-repose-custom:9.1.0.2 . 
+docker build --build-arg schema_version=1.138.3-SNAPSHOT --build-arg feeds_filters_version=1.7.0-SNAPSHOT --build-arg saxon_lic=saxon-license.lic -f Dockerfile -t cloudfeeds-repose-custom:9.1.0.2 . 
 ```
 
 Run the following command to build an image with custom + external filters. 
 ```
-docker build --build-arg schema_version=1.137.0 --build-arg feeds_filters_version=1.7.0 --build-arg saxon_lic=saxon-license.lic --build-arg repose_valve=external -f Dockerfile -t cloudfeeds-repose-external:9.1.0.2 . 
+docker build --build-arg schema_version=1.138.3-SNAPSHOT --build-arg feeds_filters_version=1.7.0-SNAPSHOT --build-arg saxon_lic=saxon-license.lic --build-arg repose_valve=external -f Dockerfile -t cloudfeeds-repose-external:9.1.0.2 . 
 ```
 
 Use the following command to run a cloudfeeds repose-valve external container on port 9090
