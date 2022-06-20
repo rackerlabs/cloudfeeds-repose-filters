@@ -17,12 +17,6 @@
         <gmaven.version>1.5</gmaven.version>
         <jasypt.version>1.9.0</jasypt.version>
         <repose.version>9.1.0.0</repose.version>
-
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <packaging>pom</packaging>
