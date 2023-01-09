@@ -18,7 +18,7 @@ Following environment variables are set
 SAXON_HOME=/etc/saxon
 APP_ROOT=/etc/repose
 APP_VARS=/var/repose
-APP_LOGS=/cloudfeeds/repose_internal/app
+APP_LOGS=/cloudfeeds/repose_external/app
 DESTINATION_PORT=8080
 ```
 

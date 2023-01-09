@@ -11,8 +11,8 @@
                 <PatternLayout pattern="%m"/>
         </Flume>
         <RollingFile name="defaultFile"
-            filename="/cloudfeeds/repose_internal/app/repose.log"
-            filePattern="/cloudfeeds/repose_internal/app/repose.log.%i"
+            filename="/cloudfeeds/repose_external/app/repose.log"
+            filePattern="/cloudfeeds/repose_external/app/repose.log.%i"
             filePermissions="rw-r--r--">
             <PatternLayout>
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-4r [%t] %-5p %c %x - %m%n</Pattern>
@@ -23,8 +23,8 @@
             <DefaultRolloverStrategy max="3"/>
         </RollingFile>
         <RollingFile name="httpLocal"
-            filename="/cloudfeeds/repose_internal/app/http_repose.log"
-            filePattern="/cloudfeeds/repose_internal/app/http_repose.log.%i"
+            filename="/cloudfeeds/repose_external/app/http_repose.log"
+            filePattern="/cloudfeeds/repose_external/app/http_repose.log.%i"
             filePermissions="rw-r--r--">
             <PatternLayout>
                 <Pattern>%m%n</Pattern>
