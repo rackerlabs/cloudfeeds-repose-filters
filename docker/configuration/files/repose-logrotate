@@ -1,4 +1,4 @@
-/cloudfeeds/repose_external/app/current.log /cloudfeeds/repose_external/app/stdout.log /cloudfeeds/repose_external/app/stderr.log
+/cloudfeeds/repose_internal/app/current.log /cloudfeeds/repose_internal/app/stdout.log /cloudfeeds/repose_internal/app/stderr.log
  {
     rotate 7
     daily
@@ -8,6 +8,6 @@
     dateext
     postrotate
       # cleanup old repose.log.YYYY-mm-dd files
-      find /cloudfeeds/repose_external/app/repose \( -name "repose.log.20*" -o -name "credentials*" -o -name "pre-ratelimit-http*" \) -mtime +7 -type -delete
+      find /cloudfeeds/repose_internal/app/repose \( -name "repose.log.20*" -o -name "credentials*" -o -name "pre-ratelimit-http*" \) -mtime +7 -type -delete
     enscript
 }
