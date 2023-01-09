@@ -30,8 +30,7 @@
     </services>
     <destinations>
       <!--endpoint default="false" hostname="storage101.pprod1.clouddrive.com" id="archive" port="443" protocol="https" root-path="v1" /-->
-      <endpoint default="true" hostname="atomhopper" id="atom_vip" port="8080" protocol="http" root-path="" />
-      <endpoint id="catalog" protocol="http" hostname="atomhopper" port="8080" root-path="/feedscatalog/catalog" />
+      <endpoint default="true" hostname="atomhopper.rackspace.com" id="atom_vip" port="8080" protocol="http" root-path="" />
+      <endpoint id="catalog" protocol="http" hostname="atomhopper.rackspace.com" port="8080" root-path="/feedscatalog/catalog" />
     </destinations>
 </system-model>
-

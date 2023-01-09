@@ -28,8 +28,7 @@
       <!--service name="dist-datastore" /-->
     </services>
     <destinations>
-      <endpoint default="true" hostname="atomhopper" id="atomhopper_localhost" port="8080" protocol="http" root-path="" />
-      <endpoint id="catalog" protocol="http" hostname="atomhopper" port="8080" root-path="/feedscatalog/catalog" />
+      <endpoint default="true" hostname="atomhopper.rackspace.com" id="atomhopper_localhost" port="8080" protocol="http" root-path="" />
+      <endpoint id="catalog" protocol="http" hostname="atomhopper.rackspace.com" port="8080" root-path="/feedscatalog/catalog" />
     </destinations>
 </system-model>
-

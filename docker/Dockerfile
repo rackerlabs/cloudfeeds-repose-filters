@@ -31,7 +31,7 @@ ENV SAXON_HOME=/etc/saxon \
     JAVA_OPTS=
 #"-Dcom.sun.management.jmxremote.port=1299 -Dcom.sun.management.jmxremote.password.file=/etc/repose/jmxremote.password -Dcom.sun.management.jmxremote.access.file=/etc/repose/jmxremote.access -Dcom.sun.management.jmxremote.ssl=false -Xms2048m -Xmx2048m" 
 
-RUN mkdir -p ${SAXON_HOME} /var/log/repose/
+RUN mkdir -p ${SAXON_HOME} /cloudfeeds/repose_external/app/
 #Inherited from Repose image
 WORKDIR ${APP_ROOT}
 #Remove existing configuration
@@ -48,4 +48,4 @@ RUN chmod +x /usr/share/repose/filters/feeds-filters-*.ear
 
 EXPOSE 9090 
 # Start Repose.
-CMD sed -i -e 's/port="8080"/port=\"'${DESTINATION_PORT}'\"/' system-model.cfg.xml && java $JAVA_OPTS -jar /usr/share/repose/repose.jar -c /etc/repose && tail -f /var/log/repose/repose.log
+CMD sed -i -e 's/port="8080"/port=\"'${DESTINATION_PORT}'\"/' system-model.cfg.xml && java $JAVA_OPTS -jar /usr/share/repose/repose.jar -c /etc/repose && tail -f /cloudfeeds/repose_external/app/repose.log
