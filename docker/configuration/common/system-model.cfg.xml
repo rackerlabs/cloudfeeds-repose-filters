@@ -32,7 +32,6 @@
     <!--  <service name="dist-datastore" />-->
     </services>
     <destinations>
-      <endpoint default="true" hostname="localhost" id="atomhopper_localhost" port="8080" protocol="http" root-path="" />
+      <endpoint default="true" hostname="{$ env_testing $}" id="atomhopper_localhost" port="8080" protocol="http" root-path="" />
     </destinations>
 </system-model>
-
