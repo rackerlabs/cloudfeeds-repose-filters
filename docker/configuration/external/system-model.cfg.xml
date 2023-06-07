@@ -6,19 +6,16 @@
         <!--node id="repose_cloudfeeds-repose-n02" hostname="cloudfeeds-repose-n02.test.ord1.ci.rackspace.net" http-port="9090"/-->
     </nodes>
     <filters>
-      <filter name="slf4j-http-logging" />
+<filter name="slf4j-http-logging" />
       <filter name="uri-normalization" uri-regex="^(?!/archive/).*" />
       <!-- <filter configuration="uri-normalization-archive.cfg.xml" name="uri-normalization" uri-regex="^/archive/.*" /> -->
       <filter name="header-normalization" />
       <!-- <filter name="ip-identity" /> -->
-      <filter name="ip-user" />
-      <filter name="rate-limiting" />
       <!-- <filter name="keystone-v2-basic-auth" />
       <filter name="keystone-v2" /> -->
       <filter name="url-extractor-to-header" />
       <!-- <filter name="keystone-v2-authorization" /> -->
       <filter configuration="header-translation.cfg.xml" name="header-translation" />
-      <filter configuration="user-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^(?!/archive/).*" />
       <filter configuration="user-archive-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^/archive/.*" />
       <filter name="json-xml-filter" uri-regex="^(?!/archive/).*" />
       <!-- <filter name="api-validator" uri-regex="^(?!/archive/).*" /> -->
