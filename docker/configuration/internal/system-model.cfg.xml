@@ -28,8 +28,8 @@
       <!--service name="dist-datastore" /-->
     </services>
     <destinations>
-      <endpoint default="true" hostname="atomhopper" id="atomhopper_localhost" port="8080" protocol="http" root-path="" />
-      <endpoint id="catalog" protocol="http" hostname="atomhopper" port="8080" root-path="/feedscatalog/catalog" />
+      <endpoint  id="atom_vip" protocol="http" hostname="atomhopper.kavi3398.test.cloudfeeds.rackspace.internal" root-path="" port="8080" default="true"/>
+      <endpoint id="catalog" protocol="http" hostname="catalog.kavi3398.test.cloudfeeds.rackspace.internal" root-path="/catalog" port="8080" default="false"/>
     </destinations>
 </system-model>
 
