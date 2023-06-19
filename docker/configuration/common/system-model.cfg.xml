@@ -17,6 +17,7 @@
 <!--  <filter name="ip-identity" /> -->  
 <!--  <filter name="rate-limiting" /> -->
 <!--  <filter configuration="rackspace-identity-basic-auth.cfg.xml" name="rackspace-identity-basic-auth" /> -->
+      <filter name="keystone-v2-basic-auth">
 <!--  <filter name="client-auth" uri-regex="(/.+/events/?|/.+/events/?[?].+|/.+/events/entries.*|/feedscatalog\/catalog/?)" /> -->
 <!--  <filter configuration="tenantid-client-auth-n.cfg.xml" name="client-auth" uri-regex="(/.+/events/[^/?]+(/entries/[^?]+)?/?(\?.*)?|/feedscatalog\/catalog\/[^/?]+/?)" />-->      
 <!--  <filter configuration="header-translation.cfg.xml" name="header-translation" /> -->
