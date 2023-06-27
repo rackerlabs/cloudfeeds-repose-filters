@@ -12,8 +12,8 @@ ENV SCHEMA_VERSION=${schema_version} \
     FEEDS_FILTER_VERSION=${feeds_filters_version}
 
 RUN apk --update add curl tar \
-    && curl -L https://artifacts.rackspace.net/artifactory/cloudfeeds-maven-local/com/rackspace/usage/usage-schema/${schema_version}/usage-schema-${schema_version}-schema.tar.gz ${APP_ROOT} | tar xz \
-    && curl -o feeds-filters-${feeds_filters_version}.ear https://artifacts.rackspace.net/artifactory/cloudfeeds-maven-local/com/rackspace/feeds/repose/feeds-filters/${feeds_filters_version}/feeds-filters-${feeds_filters_version}.ear
+    && curl -L https://artifacts.rackspace.net/artifactory/cloudfeeds-maven-local/com/rackspace/usage/usage-schema/${SCHEMA_VERSION}/usage-schema-${SCHEMA_VERSION}-schema.tar.gz ${APP_ROOT} | tar xz \
+    && curl -o feeds-filters-${FEEDS_FILTER_VERSION}.ear https://artifacts.rackspace.net/artifactory/cloudfeeds-maven-local/com/rackspace/feeds/repose/feeds-filters/${FEEDS_FILTER_VERSION}/feeds-filters-${FEEDS_FILTER_VERSION}.ear
 
 
 FROM repose-docker-local.artifacts.rackspace.net/ubuntu/reposeimage:latest

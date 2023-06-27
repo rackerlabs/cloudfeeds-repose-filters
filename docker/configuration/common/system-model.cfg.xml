@@ -11,19 +11,19 @@
       <node id="repose_node1" hostname="localhost" http-port="9090"/>
     </nodes>
     <filters>
-      <filter name="slf4j-http-logging" />
+      <!-- <filter configuration="slf4j-http-logging.cfg.xml" name="slf4j-http-logging" /> -->
       <filter name="uri-normalization" />
       <filter name="header-normalization" />
 <!--  <filter name="ip-identity" /> -->  
 <!--  <filter name="rate-limiting" /> -->
 <!--  <filter configuration="rackspace-identity-basic-auth.cfg.xml" name="rackspace-identity-basic-auth" /> -->
-      <filter name="keystone-v2-basic-auth">
-<!--  <filter name="client-auth" uri-regex="(/.+/events/?|/.+/events/?[?].+|/.+/events/entries.*|/feedscatalog\/catalog/?)" /> -->
+      <filter name="keystone-v2-basic-auth"/>
+      <filter name="keystone-v2"/>
 <!--  <filter configuration="tenantid-client-auth-n.cfg.xml" name="client-auth" uri-regex="(/.+/events/[^/?]+(/entries/[^?]+)?/?(\?.*)?|/feedscatalog\/catalog\/[^/?]+/?)" />-->      
 <!--  <filter configuration="header-translation.cfg.xml" name="header-translation" /> -->
 <!--  <filter configuration="user-rate-limiting.cfg.xml" name="rate-limiting" /> -->
-      <filter name="json-xml-filter" />     
-      <filter name="api-validator" />
+      <!-- <filter name="json-xml-filter" />      -->
+      <!-- <filter name="api-validator" /> -->
       <filter name="herp" uri-regex=".+/events/.*" />
       <filter name="derp" />
       <filter configuration="header-normalization-karate.cfg.xml" name="header-normalization" />
@@ -33,7 +33,8 @@
     <!--  <service name="dist-datastore" />-->
     </services>
     <destinations>
-      <endpoint default="true" hostname="localhost" id="atomhopper_localhost" port="8080" protocol="http" root-path="" />
+      <endpoint default="true" hostname="localhost" id="atomhopper_localhost" port="8080" protdocol="http" root-path="" />
+      <!-- <endpoint id="rackspace" protocol="http" hostname="rackspace.com" root-path="/" port="80" default="true"/> -->
     </destinations>
 </system-model>
 
