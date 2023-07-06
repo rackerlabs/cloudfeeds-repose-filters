@@ -28,8 +28,8 @@ ARG SCHEMA_VERSION
 #only way is to COPY or ADD, hance creating a multistage Dockerfile to curl and add the schema package
 
 # If image = maven:3-eclipse-temurin-8-alpine
-RUN apk add --update --no-cache curl tar && \
-    curl https://artifacts.rackspace.net/artifactory/cloudfeeds-maven-local/com/rackspace/usage/usage-schema/${SCHEMA_VERSION}/usage-schema-${SCHEMA_VERSION}-schema.tar.gz  | tar xz
+# RUN apk add --update --no-cache curl tar
+# RUN tar -xz /cf-repose-filters/usage-schema-1.138.4-SNAPSHOT-schema.tar.gz
 
 
 # If image = maven:3.8.6-openjdk-8-slim
@@ -112,7 +112,7 @@ COPY --chown=repose:repose docker/configuration/common docker/configuration/${re
 COPY --chown=repose:repose docker/configuration/files/saxon.sh docker/configuration/files/saxon.csh /etc/profile.d/
 COPY --chown=repose:repose docker/configuration/files/repose-logrotate /etc/logrotate.d/repose
 COPY --chown=repose:repose ${saxon_lic} ${SAXON_HOME}/saxon-license.lic
-COPY --chown=repose:repose --from=builder /cf-repose-filters/usage-schema-${SCHEMA_VERSION} ${APP_ROOT}/usage-schema/
+COPY --chown=repose:repose usage-schema-1.138.4-SNAPSHOT ${APP_ROOT}/usage-schema/
 COPY --chown=repose:repose --from=builder /cf-repose-filters/feeds-filters/target/feeds-filters-${FEEDS_FILTER_VERSION}.ear /usr/share/repose/filters/
 # Check if we need to copy 'json-xml-filter/target/json-xml-filter-${FEEDS_FILTER_VERSION}.jar'
 

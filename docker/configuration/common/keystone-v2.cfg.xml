@@ -2,16 +2,13 @@
 
 <keystone-v2 xmlns="http://docs.openrepose.org/repose/keystone-v2/v1.0" ignored-roles="identity:admin">
     <identity-service
-            username="xxxxxxxxxx"
-            password="xxxxxxxxxx"
+            username="atomhopper"
+            password="JZHW45davGruWApx"
             uri="https://staging.identity-internal.api.rackspacecloud.com"
             connection-pool-id="client-auth-pool"
             set-roles-in-header="true"         
             set-groups-in-header="true"        
-            set-catalog-in-header="false" />
-    <white-list>
-        <uri-regex>/buildinfo$</uri-regex>
-    </white-list>        
+            set-catalog-in-header="false" />      
     <delegating quality="0.9"/>
     <cache>
         <timeouts variability="10">

@@ -13,8 +13,8 @@
       <!-- <filter name="ip-identity" /> -->
       <filter name="ip-user" />
       <filter name="rate-limiting" />
-      <!-- <filter name="keystone-v2-basic-auth" />
-      <filter name="keystone-v2" /> -->
+      <filter name="keystone-v2-basic-auth" />
+      <filter name="keystone-v2" />
       <filter name="url-extractor-to-header" />
       <!-- <filter name="keystone-v2-authorization" /> -->
       <filter configuration="header-translation.cfg.xml" name="header-translation" />

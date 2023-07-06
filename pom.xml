@@ -17,6 +17,7 @@
         <gmaven.version>1.5</gmaven.version>
         <jasypt.version>1.9.0</jasypt.version>
         <repose.version>7.1.4.0</repose.version>
+        <api-checker.version>2.8.0</api-checker.version>
     </properties>
 
 
@@ -74,6 +75,19 @@
 
     <dependencyManagement>
         <dependencies>
+                <dependency>
+            <groupId>com.rackspace.papi.components.api-checker</groupId>
+            <artifactId>checker-core</artifactId>
+            <version>${api-checker.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.rackspace.papi.components.api-checker</groupId>
+            <artifactId>checker-core</artifactId>
+            <version>${api-checker.version}</version>
+            <scope>test</scope>
+        </dependency>
 
             <dependency>
                 <groupId>io.fastjson</groupId>
