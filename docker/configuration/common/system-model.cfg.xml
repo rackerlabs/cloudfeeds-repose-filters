@@ -32,7 +32,8 @@
     <!--  <service name="dist-datastore" />-->
     </services>
     <destinations>
-      <endpoint default="true" hostname="localhost" id="atomhopper_localhost" port="8080" protocol="http" root-path="" />
+      <endpoint  id="atom_vip" protocol="http" hostname="{$ atomhopper_hostname $}" root-path="" port="8080" default="true"/>
+      <endpoint id="catalog" protocol="http" hostname="{$ catalog_hostname $}" root-path="/catalog" port="8080" default="false"/>
     </destinations>
 </system-model>
 
