@@ -9,6 +9,9 @@
             set-roles-in-header="true"         
             set-groups-in-header="true"        
             set-catalog-in-header="false" />
+    <white-list>
+        <uri-regex>/buildinfo$</uri-regex>
+    </white-list>        
     <delegating quality="0.9"/>
     <cache>
         <timeouts variability="10">
