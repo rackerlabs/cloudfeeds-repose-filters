@@ -10,6 +10,9 @@
             set-groups-in-header="true"        
             set-catalog-in-header="false" />      
     <delegating quality="0.9"/>
+    <white-list>
+        <uri-regex>/buildinfo$</uri-regex> 
+    </white-list>
     <cache>
         <timeouts variability="10">
             <token>600000</token>

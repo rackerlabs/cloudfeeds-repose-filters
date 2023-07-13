@@ -15,7 +15,7 @@
         do-xsd-grammar-transform="true"
         enable-pre-process-extension="true"
         remove-dups="true"
-        xpath-version="2"
+        xpath-version="31"
         xsl-engine="XalanC"
         xsd-engine="SaxonEE"
         join-xpath-checks="true"
