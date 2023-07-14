@@ -12,7 +12,10 @@
         <role>cloudfeeds:ticketing-integration-publisher</role>
         <role>cloudfeeds:user-integration-publisher</role>
         <role>cloudfeeds:eps-publisher</role> 
-    </pre-authorized-roles> 
+    </pre-authorized-roles>
+    <white-list>
+        <uri-regex>/buildinfo$</uri-regex> 
+    </white-list> 
     <tenant-handling send-all-tenant-ids="true">
         <validate-tenant>
             <header-extraction-name>Requested-Tenant-Id</header-extraction-name>

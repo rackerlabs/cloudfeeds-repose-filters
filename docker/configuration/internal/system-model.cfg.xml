@@ -2,7 +2,7 @@
 <!-- To configure Repose see: http://wiki.openrepose.org/display/REPOSE/Configuration -->
 <system-model xmlns="http://docs.openrepose.org/repose/system-model/v2.0">
     <nodes>
-        <node id="repose_atom-app-n01" hostname="localhost" http-port="9090"/>
+        <node id="cloudfeeds-repose-internal-c01" hostname="localhost" http-port="9090"/>
     </nodes>
     <filters>
       <filter name="slf4j-http-logging" />
