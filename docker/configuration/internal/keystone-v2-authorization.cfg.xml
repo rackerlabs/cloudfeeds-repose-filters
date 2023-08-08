@@ -17,8 +17,8 @@
         <uri-regex>/buildinfo$</uri-regex> 
     </white-list> 
     <tenant-handling send-all-tenant-ids="true">
-        <validate-tenant>
-            <header-extraction-name>Requested-Tenant-Id</header-extraction-name>
+        <validate-tenant enable-legacy-roles-mode="true">
+            <header-extraction-name>x-tenant-id</header-extraction-name>
         </validate-tenant>
     </tenant-handling>   
 </keystone-v2-authorization>

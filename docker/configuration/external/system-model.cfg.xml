@@ -8,38 +8,33 @@
     <filters>
       <filter name="slf4j-http-logging" />
       <filter name="uri-normalization" uri-regex="^(?!/archive/).*" />
-      <!-- <filter configuration="uri-normalization-archive.cfg.xml" name="uri-normalization" uri-regex="^/archive/.*" /> -->
       <filter name="header-normalization" />
-      <!-- <filter name="ip-identity" /> -->
       <filter name="ip-user" />
       <filter name="rate-limiting" />
-      <!-- <filter name="keystone-v2-basic-auth" />
-      <filter name="keystone-v2" /> -->
+      <filter name="keystone-v2-basic-auth" />
+      <filter name="keystone-v2" />
       <filter name="url-extractor-to-header" />
-      <!-- <filter name="keystone-v2-authorization" /> -->
+      <filter name="keystone-v2-authorization" uri-regex="(/.+/events/[^/?]+(/entries/[^?]+)?/?(\?.*)?|/[^/?]+/?|^/archive/.*)" />
       <filter configuration="header-translation.cfg.xml" name="header-translation" />
-      <filter configuration="user-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^(?!/archive/).*" />
+      <filter configuration="user-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^(?!/archive/).*"/>
       <filter configuration="user-archive-rate-limiting.cfg.xml" name="rate-limiting" uri-regex="^/archive/.*" />
       <filter name="json-xml-filter" uri-regex="^(?!/archive/).*" />
-      <!-- <filter name="api-validator" uri-regex="^(?!/archive/).*" /> -->
-      <!-- <filter configuration="validator-archive.cfg.xml" name="api-validator" uri-regex="^/archive/.*" /> -->
+      <filter name="api-validator" uri-regex="^(?!/archive/).*" />
+      <filter configuration="validator-archive.cfg.xml" name="api-validator" uri-regex="^/archive/.*" />
       <filter name="uri-stripper" uri-regex="^/archive/.*" />
       <filter configuration="destination-router.cfg.xml" name="destination-router" uri-regex="^/archive/[^/?]+/[^/?]+/(iad|dfw|ord|lon|hkg|syd)_([^/?]+)_[1-9]\d{3}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])\.(xml|json)" />
       <filter name="herp" uri-regex="^(?!/archive/).+/events/.+" />
       <filter name="derp" />
       <filter configuration="header-normalization-karate.cfg.xml" name="header-normalization" />
-      <filter name="destination-router" uri-regex="/" configuration="destination-router-catalog.cfg.xml"/>
+      <filter name="destination-router" uri-regex="/.+/events/?" configuration="destination-router-catalog.cfg.xml"/>
     </filters>
 
     <services>
       <!--service name="dist-datastore" /-->
     </services>
     <destinations>
-      <!--endpoint default="false" hostname="storage101.pprod1.clouddrive.com" id="archive" port="443" protocol="https" root-path="v1" /-->
-      <endpoint  id="atom_vip" protocol="http" hostname="{$ atomhopper_hostname $}" root-path="" port="8080" default="true"/>
-      <endpoint id="catalog" protocol="http" hostname="{$ catalog_hostname $}" root-path="/catalog" port="8080" default="false"/>
-      <!-- <endpoint default="true" id="atom_vip" protocol="http" hostname="{$ HOSTNAME $}" port="{$ DESTINATION_PORT $}" root-path="" /> -->
-      <!-- <endpoint default="false" id="catalog" protocol="http" hostname="{$ HOSTNAME $}" port="{$ DESTINATION_PORT $}" root-path="/feedscatalog/catalog" /> -->
+      <endpoint  id="atom_vip" protocol="http" hostname="{$ atomhopper_hostname $}" root-path="" port="8080" default="false"/>
+      <endpoint id="catalog" protocol="http" hostname="{$ catalog_hostname $}" root-path="/feedscatalog/catalog" port="8080" default="true"/>
     </destinations>
 </system-model>
 

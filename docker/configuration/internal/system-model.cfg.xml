@@ -13,7 +13,7 @@
       <filter name="keystone-v2-basic-auth" />
       <filter name="keystone-v2" />
       <filter name="url-extractor-to-header" />
-      <filter name="keystone-v2-authorization" />
+      <filter name="keystone-v2-authorization" uri-regex="(/.+/events/[^/?]+(/entries/[^?]+)?/?(\?.*)?|/[^/?]+/?)" />
       <filter configuration="header-translation.cfg.xml" name="header-translation" />
       <filter configuration="user-rate-limiting.cfg.xml" name="rate-limiting" />
       <filter name="json-xml-filter" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <url-extractor-to-header xmlns="http://docs.openrepose.org/repose/url-extractor-to-header/v1.0">
-    <extraction header="Requested-Tenant-Id" url-regex="/.+/events/([^/?]+)/?" /> 
-    <extraction header="Requested-Tenant-Id" url-regex="/feedscatalog/catalog/([^/?]+)/?" />
-    <extraction header="Requested-Tenant-Id" url-regex="/archive/([^/?]+)/.*" /> 
+    <extraction header="x-tenant-id" url-regex="/.+/events/([^/?]+)/?" /> 
+    <extraction header="x-tenant-id" url-regex="/([^/?]+)/?" />
+    <extraction header="x-tenant-id" url-regex="/archive/([^/?]+)/.*" /> 
 </url-extractor-to-header>
