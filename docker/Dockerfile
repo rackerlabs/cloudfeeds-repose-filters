@@ -123,18 +123,15 @@ USER root
 WORKDIR ${APP_ROOT}
 
 # use existing non privileged user `repose`
-RUN <<EOF
-      apt-get update
-      apt-get -y install --no-install-recommends  curl
-      rm -rf /var/lib/apt/lists/*
-
-      curl -L -O  https://github.com/Yelp/dumb-init/releases/download/v${dumb_init_version}/dumb-init_${dumb_init_version}_amd64.deb
-      dpkg -i dumb-init_${dumb_init_version}_amd64.deb
-      chown repose /usr/bin/dumb-init
-      rm -f dumb-init_${dumb_init_version}_amd64.deb
-      curl -L --output /tmp/aws-opentelemetry-agent.jar https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/${AWS_OTEL_JAVA_AGENT_VERSION}/aws-opentelemetry-agent.jar
+RUN   apt-get update && \
+      apt-get -y install --no-install-recommends  curl && \
+      rm -rf /var/lib/apt/lists/* && \
+      curl -L -O  https://github.com/Yelp/dumb-init/releases/download/v${dumb_init_version}/dumb-init_${dumb_init_version}_amd64.deb && \
+      dpkg -i dumb-init_${dumb_init_version}_amd64.deb && \
+      chown repose /usr/bin/dumb-init && \
+      rm -f dumb-init_${dumb_init_version}_amd64.deb && \
+      curl -L --output /tmp/aws-opentelemetry-agent.jar https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/${AWS_OTEL_JAVA_AGENT_VERSION}/aws-opentelemetry-agent.jar && \
       chown repose /tmp/aws-opentelemetry-agent.jar
-EOF
 
 # with `repose` user getting error as `cannot able to create '/var/log/repose/repose.log' file`
 # USER repose
