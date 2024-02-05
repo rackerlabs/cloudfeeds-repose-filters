@@ -11,7 +11,7 @@ FROM bitnami/git:latest AS fetcher
 ARG git_url=https://github.com/rackerlabs/cloudfeeds-repose-filters.git
 
 # ARG git_branch="feature_repose_valve_container"
-ARG git_branch="CF-3585-AWS_Xray_with_ECS"
+ARG git_branch="CF-3815-EC2-image-builder-for-repose"
 
 
 ENV GIT_URL=${GIT_URL:-$git_url} \
