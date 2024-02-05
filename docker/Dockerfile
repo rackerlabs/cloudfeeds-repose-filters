@@ -8,7 +8,7 @@
 FROM bitnami/git:latest AS fetcher
 
 # Pass custom values for any Below ARG variables from ECS Container Definition
-ARG git_url=https://github.com/rackerlabs/cloudfeeds-repose-filters.git
+ARG git_url="https://github.com/rackerlabs/cloudfeeds-repose-filters.git"
 
 # ARG git_branch="feature_repose_valve_container"
 ARG git_branch="CF-3815-EC2-image-builder-for-repose"
@@ -43,14 +43,14 @@ RUN mvn  -B dependency:resolve
 #RUN mvn  dependency:go-offline
 
 #UsageSchema version
-ARG SCHEMA_VERSION
+ARG SCHEMA_VERSION="1.138.4"
 
 #Repose image exposes /etc/repose as volume hence adding any artifact by wget of curl are getting removed,
 #only way is to COPY or ADD, hance creating a multistage Dockerfile to curl and add the schema package
 
 # If image = maven:3-eclipse-temurin-8-alpine
-RUN apk add --update --no-cache curl tar && \
-    curl https://artifacts.rackspace.net/artifactory/cloudfeeds-maven-local/com/rackspace/usage/usage-schema/${SCHEMA_VERSION}/usage-schema-${SCHEMA_VERSION}-schema.tar.gz  | tar xz
+RUN apk add --update --no-cache curl tar gzip && \
+    curl https://artifacts.rackspace.net/artifactory/cloudfeeds-maven-local/com/rackspace/usage/usage-schema/${SCHEMA_VERSION}/usage-schema-${SCHEMA_VERSION}-schema.tar.gz  | tar xzv
 
 
 # If image = maven:3.8.6-openjdk-8-slim
@@ -86,12 +86,12 @@ RUN mvn  -B package
 FROM rackerlabs/repose:9.1.0.0
 
 #Custom Feeds Filters Version
-ARG feeds_filter_version
+ARG feeds_filter_version="1.7.0-SNAPSHOT"
 
-ARG SCHEMA_VERSION
+ARG SCHEMA_VERSION="1.138.4"
 
 #Saxon License file 
-ARG saxon_lic
+# ARG saxon_lic
 
 #Repose valve type default value is custom filters (common configuration)
 ARG repose_valve=common
@@ -107,10 +107,10 @@ LABEL com.rackspace.cloudfeeds.image.maintainer="cloudfeeds-core@rackspace.com" 
       com.rackspace.cloudfeeds.image.version="${FEEDS_FILTER_VERSION}" \
       com.rackspace.cloudfeeds.image.source="https://github.com/rackerlabs/cloudfeeds-repose-filters"
 
-ENV SAXON_HOME=/etc/saxon \
-    DESTINATION_PORT=8080 \
-    REPOSE_PORT=9090 \
+ENV REPOSE_PORT=9090 \
     APP_ROOT=/etc/repose \
+    # DESTINATION_PORT=8080 \
+    # SAXON_HOME=/etc/saxon \
     # OpenTelemetry
     AWS_OTEL_JAVA_AGENT_VERSION="v1.29.0" \
     OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 \
