@@ -94,7 +94,7 @@ ARG SCHEMA_VERSION="1.138.4"
 # ARG saxon_lic
 
 #Repose valve type default value is custom filters (common configuration)
-ARG repose_valve=common
+ARG repose_valve=external
 
 ARG dumb_init_version=1.2.5
 
@@ -109,8 +109,8 @@ LABEL com.rackspace.cloudfeeds.image.maintainer="cloudfeeds-core@rackspace.com" 
 
 ENV REPOSE_PORT=9090 \
     APP_ROOT=/etc/repose \
+    SAXON_HOME=/etc/saxon \
     # DESTINATION_PORT=8080 \
-    # SAXON_HOME=/etc/saxon \
     # OpenTelemetry
     AWS_OTEL_JAVA_AGENT_VERSION="v1.29.0" \
     OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 \
