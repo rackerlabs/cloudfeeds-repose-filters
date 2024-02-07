@@ -110,7 +110,7 @@ LABEL com.rackspace.cloudfeeds.image.maintainer="cloudfeeds-core@rackspace.com" 
 ENV REPOSE_PORT=9090 \
     APP_ROOT=/etc/repose \
     SAXON_HOME=/etc/saxon \
-    # DESTINATION_PORT=8080 \
+    DESTINATION_PORT=8080 \
     # OpenTelemetry
     AWS_OTEL_JAVA_AGENT_VERSION="v1.29.0" \
     OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 \
