@@ -43,7 +43,7 @@ RUN mvn  -B dependency:resolve
 #RUN mvn  dependency:go-offline
 
 #UsageSchema version
-ARG SCHEMA_VERSION="1.138.4"
+ARG SCHEMA_VERSION="1.138.3-SNAPSHOT"
 
 #Repose image exposes /etc/repose as volume hence adding any artifact by wget of curl are getting removed,
 #only way is to COPY or ADD, hance creating a multistage Dockerfile to curl and add the schema package
@@ -88,7 +88,7 @@ FROM rackerlabs/repose:9.1.0.0
 #Custom Feeds Filters Version
 ARG feeds_filter_version="1.7.0-SNAPSHOT"
 
-ARG SCHEMA_VERSION="1.138.4"
+ARG SCHEMA_VERSION="1.138.3-SNAPSHOT"
 
 #Saxon License file 
 # ARG saxon_lic
