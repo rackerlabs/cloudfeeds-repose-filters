@@ -4,7 +4,25 @@
 # docker build -t bachupaul/repose-external:v1  --build-arg feeds_filter_version=1.7.0-SNAPSHOT --build-arg SCHEMA_VERSION=1.138.3-SNAPSHOT --build-arg saxon_lic="docker/saxon-license.lic" --build-arg repose_valve=external  -f Dockerfile ../
 # docker build -t bachupaul/repose-external:v1  --build-arg feeds_filter_version=1.7.0-SNAPSHOT --build-arg SCHEMA_VERSION=1.138.3-SNAPSHOT --build-arg repose_valve=external  -f Dockerfile ../
 
-# =========================== Build Cloudfeeds feeds repose filter artifacts ===========================
+# =============== Clone cloudfeeds-repose-filters repo to build container image in AWS EC2 Image Builder ===============
+FROM bitnami/git:latest AS fetcher
+
+# Pass custom values for any Below ARG variables from ECS Container Definition
+ARG git_url="https://github.com/rackerlabs/cloudfeeds-repose-filters.git"
+
+# ARG git_branch="feature_repose_valve_container"
+ARG git_branch="CF-3815-EC2-image-builder-for-repose"
+
+
+ENV GIT_URL=${GIT_URL:-$git_url} \
+    GIT_BRANCH=${GIT_BRANCH:-$git_branch}
+
+RUN mkdir -p /home/rf && \
+    cd /home && \
+    git clone -b ${GIT_BRANCH} ${GIT_URL} rf
+
+
+# =========================== Build Cloudfeeds repose filter artifacts ===========================
 
 # FROM maven:3.8.6-openjdk-8-slim AS builder
 FROM maven:3-eclipse-temurin-8-alpine AS builder
@@ -16,23 +34,23 @@ LABEL com.rackspace.cloudfeeds.image.maintainer="cloudfeeds-core@rackspace.com" 
 
 WORKDIR /cf-repose-filters
 
-COPY pom.xml                              ./pom.xml
-COPY feeds-filters/pom.xml                ./feeds-filters/pom.xml
-COPY json-xml-filter/pom.xml              ./json-xml-filter/pom.xml
+COPY --from=fetcher /home/rf/pom.xml                              ./pom.xml
+COPY --from=fetcher /home/rf/feeds-filters/pom.xml                ./feeds-filters/pom.xml
+COPY --from=fetcher /home/rf/json-xml-filter/pom.xml              ./json-xml-filter/pom.xml
 # COPY functional-tests/pom.xml              ./functional-tests/pom.xml
 
 RUN mvn  -B dependency:resolve
 #RUN mvn  dependency:go-offline
 
 #UsageSchema version
-ARG SCHEMA_VERSION
+ARG SCHEMA_VERSION="1.138.3-SNAPSHOT"
 
 #Repose image exposes /etc/repose as volume hence adding any artifact by wget of curl are getting removed,
 #only way is to COPY or ADD, hance creating a multistage Dockerfile to curl and add the schema package
 
 # If image = maven:3-eclipse-temurin-8-alpine
-RUN apk add --update --no-cache curl tar && \
-    curl https://artifacts.rackspace.net/artifactory/cloudfeeds-maven-local/com/rackspace/usage/usage-schema/${SCHEMA_VERSION}/usage-schema-${SCHEMA_VERSION}-schema.tar.gz  | tar xz
+RUN apk add --update --no-cache curl tar gzip && \
+    curl https://artifacts.rackspace.net/artifactory/cloudfeeds-maven-local/com/rackspace/usage/usage-schema/${SCHEMA_VERSION}/usage-schema-${SCHEMA_VERSION}-schema.tar.gz  | tar xzv
 
 
 # If image = maven:3.8.6-openjdk-8-slim
@@ -42,8 +60,8 @@ RUN apk add --update --no-cache curl tar && \
 #     && curl https://artifacts.rackspace.net/artifactory/cloudfeeds-maven-local/com/rackspace/usage/usage-schema/${SCHEMA_VERSION}/usage-schema-${SCHEMA_VERSION}-schema.tar.gz  | tar xz
 
 
-COPY feeds-filters/src ./feeds-filters/src
-COPY json-xml-filter/src ./json-xml-filter/src
+COPY --from=fetcher /home/rf/feeds-filters/src ./feeds-filters/src
+COPY --from=fetcher /home/rf/json-xml-filter/src ./json-xml-filter/src
 # COPY functional-tests/src ./functional-tests/src
 
 #RUN mvn -B package -DskipTests
@@ -68,15 +86,15 @@ RUN mvn  -B package
 FROM rackerlabs/repose:9.1.0.0
 
 #Custom Feeds Filters Version
-ARG feeds_filter_version
+ARG feeds_filter_version="1.7.0-SNAPSHOT"
 
-ARG SCHEMA_VERSION
+ARG SCHEMA_VERSION="1.138.3-SNAPSHOT"
 
 #Saxon License file 
-ARG saxon_lic
+# ARG saxon_lic
 
 #Repose valve type default value is custom filters (common configuration)
-ARG repose_valve=common
+ARG repose_valve=external
 
 ARG dumb_init_version=1.2.5
 
@@ -89,10 +107,10 @@ LABEL com.rackspace.cloudfeeds.image.maintainer="cloudfeeds-core@rackspace.com" 
       com.rackspace.cloudfeeds.image.version="${FEEDS_FILTER_VERSION}" \
       com.rackspace.cloudfeeds.image.source="https://github.com/rackerlabs/cloudfeeds-repose-filters"
 
-ENV SAXON_HOME=/etc/saxon \
-    DESTINATION_PORT=8080 \
-    REPOSE_PORT=9090 \
+ENV REPOSE_PORT=9090 \
     APP_ROOT=/etc/repose \
+    SAXON_HOME=/etc/saxon \
+    DESTINATION_PORT=8080 \
     # OpenTelemetry
     AWS_OTEL_JAVA_AGENT_VERSION="v1.29.0" \
     OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 \
@@ -105,25 +123,22 @@ USER root
 WORKDIR ${APP_ROOT}
 
 # use existing non privileged user `repose`
-RUN <<EOF
-      apt-get update
-      apt-get -y install --no-install-recommends  curl
-      rm -rf /var/lib/apt/lists/*
-
-      curl -L -O  https://github.com/Yelp/dumb-init/releases/download/v${dumb_init_version}/dumb-init_${dumb_init_version}_amd64.deb
-      dpkg -i dumb-init_${dumb_init_version}_amd64.deb
-      chown repose /usr/bin/dumb-init
-      rm -f dumb-init_${dumb_init_version}_amd64.deb
-      curl -L --output /tmp/aws-opentelemetry-agent.jar https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/${AWS_OTEL_JAVA_AGENT_VERSION}/aws-opentelemetry-agent.jar
+RUN   apt-get update && \
+      apt-get -y install --no-install-recommends  curl && \
+      rm -rf /var/lib/apt/lists/* && \
+      curl -L -O  https://github.com/Yelp/dumb-init/releases/download/v${dumb_init_version}/dumb-init_${dumb_init_version}_amd64.deb && \
+      dpkg -i dumb-init_${dumb_init_version}_amd64.deb && \
+      chown repose /usr/bin/dumb-init && \
+      rm -f dumb-init_${dumb_init_version}_amd64.deb && \
+      curl -L --output /tmp/aws-opentelemetry-agent.jar https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/${AWS_OTEL_JAVA_AGENT_VERSION}/aws-opentelemetry-agent.jar && \
       chown repose /tmp/aws-opentelemetry-agent.jar
-EOF
 
 # with `repose` user getting error as `cannot able to create '/var/log/repose/repose.log' file`
 # USER repose
 
-COPY --chown=repose:repose docker/configuration/common docker/configuration/${repose_valve} docker/configuration/files/jmx/ ${APP_ROOT}/
-COPY --chown=repose:repose docker/configuration/files/saxon.sh docker/configuration/files/saxon.csh /etc/profile.d/
-COPY --chown=repose:repose docker/configuration/files/repose-logrotate /etc/logrotate.d/repose
+COPY --chown=repose:repose --from=fetcher /home/rf/docker/configuration/common /home/rf/docker/configuration/${repose_valve} /home/rf/docker/configuration/files/jmx/ ${APP_ROOT}/
+COPY --chown=repose:repose --from=fetcher /home/rf/docker/configuration/files/saxon.sh /home/rf/docker/configuration/files/saxon.csh /etc/profile.d/
+COPY --chown=repose:repose --from=fetcher /home/rf/docker/configuration/files/repose-logrotate /etc/logrotate.d/repose
 # COPY --chown=repose:repose ${saxon_lic} ${SAXON_HOME}/saxon-license.lic
 COPY --chown=repose:repose --from=builder /cf-repose-filters/usage-schema-${SCHEMA_VERSION} ${APP_ROOT}/usage-schema/
 COPY --chown=repose:repose --from=builder /cf-repose-filters/feeds-filters/target/feeds-filters-${FEEDS_FILTER_VERSION}.ear /usr/share/repose/filters/
