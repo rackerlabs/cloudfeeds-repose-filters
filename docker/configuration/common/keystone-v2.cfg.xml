@@ -11,6 +11,7 @@
             set-catalog-in-header="false" />
     <white-list>
         <uri-regex>/buildinfo$</uri-regex>
+        <uri-regex>/catalog-buildinfo$</uri-regex>
     </white-list>        
     <delegating quality="0.9"/>
     <cache>

@@ -36,22 +36,22 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="WARN">
+        <Root level="ALL">
             <AppenderRef ref="defaultFile"/>
         </Root>
-        <Logger name="com.sun.jersey" level="off"/>
-        <Logger name="net.sf.ehcache" level="error"/>
-        <Logger name="org.apache.commons.httpclient" level="warn"/>
-        <Logger name="org.eclipse.jetty" level="off"/>
-        <Logger name="org.openrepose" level="info"/>
-        <Logger name="org.rackspace.deproxy" level="info"/>
-        <Logger name="org.springframework" level="warn"/>
-        <Logger name="intrafilter-logging" level="info"/>
-        <Logger name="http" level="info" additivity="false">
+        <Logger name="com.sun.jersey" level="all"/>
+        <Logger name="net.sf.ehcache" level="all"/>
+        <Logger name="org.apache.commons.httpclient" level="all"/>
+        <Logger name="org.eclipse.jetty" level="all"/>
+        <Logger name="org.openrepose" level="all"/>
+        <Logger name="org.rackspace.deproxy" level="all"/>
+        <Logger name="org.springframework" level="all"/>
+        <Logger name="intrafilter-logging" level="all"/>
+        <Logger name="http" level="all" additivity="false">
             <AppenderRef ref="httpLocal"/>
         </Logger>
-        <Logger name="org.openrepose.herp.pre.filter" level="warn"/>
-        <Logger name="org.openrepose.herp.post.filter" level="info" additivity="false">
+        <Logger name="org.openrepose.herp.pre.filter" level="all"/>
+        <Logger name="org.openrepose.herp.post.filter" level="all" additivity="false">
             <AppenderRef ref="EventLogger"/>
         </Logger>
     </Loggers>
