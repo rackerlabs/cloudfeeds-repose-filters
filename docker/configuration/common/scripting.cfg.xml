@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scripting xmlns="http://docs.openrepose.org/repose/scripting/v1.0"
+           language="groovy"><![CDATA[
+    import groovy.xml.MarkupBuilder
+    import groovy.json.JsonBuilder
+
+    //Continue the filter chain
+    filterChain.doFilter(request, response)
+
+    //Check to see if we should monkey with the response because we have xml and a 2xx
+    println("asdfasdfasdfasdafs"+ response.getStatus())
+    println("ddddd" + request.getHeadersList("Accept"))
+    println("cccccccccc" + request.getHeadersList("content-type"))
+    println("vfvfvfvfvfv222222" + response.getHeaders("Accept"))
+    if(response.status == 413){
+        if((!request.getHeadersList("content-type").isEmpty()) && ("application/json").equalsIgnoreCase(request.getHeadersList("content-type").first())){
+            println("khanndddddddddddddda")
+            response.uncommit()
+            response.resetBuffer()
+            def json = new JsonBuilder()
+            json.overLimit{
+                "code" "413"
+                "message" "OverLimit Retry..."
+                "details" "Error Details..."
+                "retryAfter" "%{Retry-After DATE ISO_8601}o"
+                }
+            response.setHeader("Content-Type", "application/json")
+            response.resetError()
+            response.getWriter().print(json.toString())
+            response.getWriter().flush();
+        }else if((!request.getHeadersList("content-type").isEmpty()) && ("application/xml").equalsIgnoreCase(request.getHeadersList("content-type").first())){
+            response.uncommit()
+            response.resetBuffer()
+            def xml = new MarkupBuilder(response.getWriter())
+            xml.doubleQuotes = true
+                        xml.mkp.xmlDeclaration version: "1.0", encoding: "UTF-8"
+            xml.overLimit('xmlns':'http://docs.openstack.org/compute/api/v1.1',
+            'code':'413',
+            'retryAfter':'%{Retry-After DATE ISO_8601}o') {
+                message("OverLimit Retry...")
+                details("Error Details...")
+            }
+            response.setHeader("Content-Type", "application/xml")
+            response.resetError()
+            response.getWriter().flush();
+        }
+            }
+    else if(response.status == 406){
+        if((!request.getHeadersList("content-type").isEmpty()) && ("application/json").equalsIgnoreCase(request.getHeadersList("content-type").first())){
+            println("khanndddddddddddddda")
+            response.uncommit()
+            response.resetBuffer()
+            def json = new JsonBuilder()
+            json.error{
+                "@type" "http://abdera.apache.org"
+                "code" "406"
+                "message" "Accept header contains unsupported media types: application/*json. Try using application/vnd.rackspace.atom+json."
+                }
+                println("sdfsdfsdfs" + json)
+            response.setHeader("Content-Type", "application/json")
+            response.resetError()
+            response.getWriter().print(json.toString())
+            response.getWriter().flush();
+        }
+    }
+    else if(response.status == 401){
+                if((!request.getHeadersList("content-type").isEmpty()) && ("application/json").equalsIgnoreCase(request.getHeadersList("content-type").first())){
+            println("khanndddddddddddddda")
+            response.uncommit()
+            response.resetBuffer()
+            def json = new JsonBuilder()
+            json.error{
+                "@type" "http://abdera.apache.org"
+                "code" response.getStatus()
+                "message" "This feed requires authentication. Refer to the Authentication chapter in Cloud Feeds documentation at http://docs-internal-staging.rackspace.com/ for details."
+                }
+                println("sdfsdfsdfs" + json)
+            response.setHeader("Content-Type", "application/json")
+            response.resetError()
+            response.getWriter().print(json.toString())
+            response.getWriter().flush();
+        }else {
+        response.uncommit()
+        response.resetBuffer()
+        def xml = new MarkupBuilder(response.getWriter())
+        xml.doubleQuotes = true
+        xml.mkp.xmlDeclaration version: "1.0", encoding: "UTF-8"
+        xml.error('xmlns' : 'http://abdera.apache.org',
+        'xmlns:atom' : 'http://www.w3.org/2005/Atom') {
+            code(response.getStatus())
+            message("This feed requires authentication. Refer to the Authentication chapter in Cloud Feeds documentation at http://docs-internal-staging.rackspace.com/ for details.")
+            }
+            response.setHeader("Content-Type", "application/xml")
+        response.resetError()
+        response.getWriter().flush();
+        }
+    }
+    else if((response.status >= 400) && (response.status < 600)) {
+        if((!request.getHeadersList("content-type").isEmpty()) && ("application/json").equalsIgnoreCase(request.getHeadersList("content-type").first())){
+                        response.uncommit()
+            response.resetBuffer()
+            def json = new JsonBuilder()
+            json.error{
+                "@type" "http://abdera.apache.org"
+                "code" response.getStatus()
+                "message" response.getReason()
+                }
+                println("sdfsdfsdfs" + json)
+            response.setHeader("Content-Type", "application/json")
+            response.resetError()
+            response.getWriter().print(json.toString())
+            response.getWriter().flush();
+        }else{
+        response.uncommit()
+        response.resetBuffer()
+        def xml = new MarkupBuilder(response.getWriter())
+        xml.doubleQuotes = true
+        xml.mkp.xmlDeclaration version: "1.0", encoding: "UTF-8"
+        xml.error('xmlns':'http://abdera.apache.org',
+         'xmlns:db':'http://docbook.org/ns/docbook',
+         'xmlns:xs':'http://www.w3.org/2001/XMLSchema',
+         'xmlns:event':'http://docs.rackspace.com/core/event',
+         'xmlns:dbaas':'http://docs.rackspace.com/usage/dbaas',
+         'xmlns:maas':'http://docs.rackspace.com/usage/maas',
+         'xmlns:lbaas':'http://docs.rackspace.com/usage/lbaas',
+         'xmlns:lbaas-account':'http://docs.rackspace.com/usage/lbaas/account',
+         'xmlns:cbs':'http://docs.rackspace.com/usage/cbs',
+         'xmlns:cbs-snap':'http://docs.rackspace.com/usage/cbs/snapshot',
+         'xmlns:cf-b':'http://docs.rackspace.com/usage/cloudfiles/bandwidth',
+         'xmlns:cf-cdn':'http://docs.rackspace.com/usage/cloudfiles/cdnbandwidth',
+         'xmlns:cf-str':'http://docs.rackspace.com/usage/cloudfiles/storage',
+         'xmlns:rax':'http://docs.rackspace.com/api',
+         'xmlns:atom':'http://www.w3.org/2005/Atom') {
+            code(response.getStatus())
+            message(response.getReason())
+            }
+        response.setHeader("Content-Type", "application/xml")
+                response.resetError()
+        response.getWriter().flush();
+        }
+    }
+]]></scripting>

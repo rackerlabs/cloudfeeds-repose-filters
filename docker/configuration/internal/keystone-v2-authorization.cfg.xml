@@ -14,7 +14,8 @@
         <role>cloudfeeds:eps-publisher</role> 
     </pre-authorized-roles>
     <white-list>
-        <uri-regex>/buildinfo$</uri-regex> 
+        <uri-regex>/buildinfo$</uri-regex>
+        <uri-regex>/catalog-buildinfo$</uri-regex>
     </white-list> 
     <tenant-handling send-all-tenant-ids="true">
         <validate-tenant>

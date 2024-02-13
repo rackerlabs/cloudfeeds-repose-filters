@@ -21,7 +21,7 @@
       <filter name="herp" uri-regex=".+/events/.*" />
       <filter name="derp" />
       <filter configuration="header-normalization-karate.cfg.xml" name="header-normalization" />
-      <filter name="destination-router" uri-regex="/.+/events/?" configuration="destination-router-catalog.cfg.xml"/>
+      <filter name="destination-router" uri-regex="/.+/events.*|/buildinfo" configuration="destination-router-catalog.cfg.xml"/>
     </filters>
 
     <services>
