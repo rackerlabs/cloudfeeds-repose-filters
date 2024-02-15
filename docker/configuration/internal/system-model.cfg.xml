@@ -5,6 +5,7 @@
         <node id="cloudfeeds-repose-internal-c01" hostname="localhost" http-port="9090"/>
     </nodes>
     <filters>
+      <filter name="scripting" />
       <filter name="slf4j-http-logging" />
       <filter name="uri-normalization" />
       <filter name="header-normalization" />
